@@ -450,7 +450,7 @@ function renderGrid(){
         <div class="chip-controls" onclick="event.stopPropagation()">
           <label>LVL:
             <select class="v-lvl" data-sprite="${sprite.id}" data-var="${v}">
-              ${[1,2,3,4,5,6].map(l => `<option value="${l}" ${currentLevel == l ? 'selected' : ''}>${l}</option>`).join('')}
+              ${[1,2,3,4,5].map(l => `<option value="${l}" ${currentLevel == l ? 'selected' : ''}>${l}</option>`).join('')}
             </select>
           </label>
           <label>
