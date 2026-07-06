@@ -62,27 +62,21 @@ function totalSlots(){
 function collectedSlots(){
   return Object.keys(state).filter(k => !k.includes(':_') && state[k]).length;
 }
-
-function buildDots(){
-  const dots = document.getElementById('dots');
-  const total = totalSlots();
-  dots.innerHTML = '';
-  for(let i=0;i<total;i++){
-    const d = document.createElement('div');
-    d.className = 'dot';
-    dots.appendChild(d);
-  }
+function masteredSlots(){
+  return Object.keys(state).filter(k => k.includes(':_mastered') && state[k]).length;
 }
+
 function renderProgress(){
   const total = totalSlots();
   const got = collectedSlots();
+  const mastered = masteredSlots();
   const percentage = total > 0 ? (got / total) * 100 : 0;
 
-  document.getElementById('countText').innerHTML = got + '<span> / ' + total + '</span>';
+  document.getElementById('countText').innerHTML = got + '<span>/ ' + total + ' Extracted</span>';
+  document.getElementById('masteredCountText').innerHTML = mastered + '<span>/ ' + total + ' Mastered</span>';
   document.getElementById('pctText').textContent = Math.round(percentage) + '%';
   document.getElementById('totalMeta').textContent = total;
   
-  // Atualiza a largura da barra de preenchimento fluido
   const fill = document.getElementById('trackFill');
   if (fill) {
     fill.style.width = percentage + '%';
@@ -179,12 +173,26 @@ function renderGrid(){
 
       chip.querySelector('.v-lvl').addEventListener('change', (e) => {
         state[levelKey(sprite.id, v)] = e.target.value;
+        const k = key(sprite.id, v);
+        if (!state[k]) {
+          state[k] = true;
+          renderGrid(); 
+        }
         saveState();
+        renderProgress();
       });
       
       chip.querySelector('.v-mast').addEventListener('change', (e) => {
         state[masterKey(sprite.id, v)] = e.target.checked;
+        if (e.target.checked) {
+          const k = key(sprite.id, v);
+          if (!state[k]) {
+            state[k] = true;
+            renderGrid();
+          }
+        }
         saveState();
+        renderProgress();
       });
 
       variantsRow.appendChild(chip);
@@ -261,7 +269,6 @@ document.getElementById('importBtn').addEventListener('click', ()=>{
   });
   input.click();
 });
-
 
 renderGrid();
 renderProgress();

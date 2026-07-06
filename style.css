@@ -68,24 +68,38 @@ h1{
 .track-top {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: flex-end;
   margin-bottom: 12px;
+  gap: 16px;
+}
+.track-counters {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
 }
 .track-count {
   font-family: 'Big Shoulders Stencil';
   font-size: 26px;
   color: var(--stamp);
+  line-height: 1;
 }
 .track-count span {
   color: var(--ink-soft);
-  font-size: 15px;
+  font-size: 14px;
   font-family: 'JetBrains Mono';
-  font-weight: 500;
+  font-weight: 700;
+  margin-left: 4px;
+  text-transform: uppercase;
+}
+/* Cor personalizada para o contador de Mastered */
+.mastered-count-color {
+  color: var(--legendary);
 }
 .track-pct {
   font-family: 'JetBrains Mono';
   font-size: 13px;
   color: var(--ink-soft);
+  font-weight: 700;
 }
 .track {
   position: relative;
@@ -96,9 +110,9 @@ h1{
 }
 .track-fill {
   height: 100%;
-  width: 0%; /* Controlado dinamicamente via JS */
+  width: 0%;
   background: var(--stamp);
-  transition: width 0.3s ease-out; /* Dá uma animação suave ao ganhar items */
+  transition: width 0.3s ease-out;
 }
 
 /* CONTROLS */
