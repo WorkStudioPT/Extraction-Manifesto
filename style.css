@@ -138,6 +138,8 @@ input[type=text]:focus{outline:none;border-color:var(--stamp);}
   text-transform:uppercase;transition: 0.1s;
 }
 .iconbtn:hover{background:var(--stamp);border-color:var(--stamp);}
+.iconbtn.danger{background:transparent;color:var(--stamp);border-color:var(--stamp);}
+.iconbtn.danger:hover{background:var(--stamp);color:var(--card);}
 
 /* GRID */
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(920px,1fr));gap:14px;}
@@ -217,78 +219,99 @@ input[type=text]:focus{outline:none;border-color:var(--stamp);}
 }
 
 .chip-controls {
-  margin-top: 6px;
-  padding-top: 6px;
+  margin-top: 8px;
+  padding-top: 8px;
   border-top: 1px dashed var(--line);
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   text-align: left;
-  font-size: 9px;
 }
 .chip.on .chip-controls {
   border-top-color: var(--ink-soft);
 }
-.chip-controls label {
+.ctrl-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 2px;
+  gap: 6px;
   cursor: pointer;
+}
+.ctrl-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  opacity: .8;
 }
 .chip-controls select {
   background: var(--card);
   border: 1px solid var(--line);
+  border-radius: 3px;
   color: var(--ink);
   font-family: 'JetBrains Mono';
-  font-size: 9px;
+  font-size: 11.5px;
   font-weight: 700;
-  padding: 0px 2px;
+  padding: 3px 4px;
+  width: 44px;
+  text-align: center;
   outline: none;
+  cursor: pointer;
 }
 .chip.on .chip-controls select {
   background: var(--paper);
   border-color: var(--ink-soft);
 }
 
-/* INPUT CHECKBOX MASTERED */
+/* INPUT CHECKBOX MASTERED — styled like a wax stamp seal */
 .chip-controls input[type="checkbox"] {
   appearance: none;
-  width: 11px;
-  height: 11px;
-  border: 1px solid var(--ink);
+  width: 17px;
+  height: 17px;
+  border-radius: 3px;
+  border: 1.5px solid var(--ink);
   background: var(--card);
   cursor: pointer;
   position: relative;
   margin: 0;
+  flex-shrink: 0;
+  transition: .12s;
 }
 .chip.on .chip-controls input[type="checkbox"] {
-  border-color: var(--card);
-  background: var(--paper);
+  border-color: var(--paper);
+  background: var(--ink-soft);
 }
 .chip-controls input[type="checkbox"]:checked {
-  background: var(--ink);
-  border-color: var(--ink);
+  background: var(--premium);
+  border-color: var(--premium);
 }
 .chip.on .chip-controls input[type="checkbox"]:checked {
-  background: var(--paper);
-  border-color: var(--card);
+  background: var(--premium);
+  border-color: var(--premium);
 }
 .chip-controls input[type="checkbox"]:checked::after {
-  content: "✕";
+  content: "✓";
   position: absolute;
-  color: var(--card);
-  font-size: 8px;
+  color: var(--ink);
+  font-size: 12px;
   font-weight: 800;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
-.chip.on .chip-controls input[type="checkbox"]:checked::after {
-  color: var(--ink);
-}
 
-footer{text-align:center;color:var(--ink-soft);font-size:12px;margin-top:40px;font-family:'JetBrains Mono';}
+footer{
+  margin-top:40px;
+  padding-top:24px;
+  border-top:2px solid var(--line);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:14px;
+}
+.footer-actions{
+  display:flex;gap:10px;flex-wrap:wrap;justify-content:center;
+}
+.footer-note{text-align:center;color:var(--ink-soft);font-size:12px;font-family:'JetBrains Mono';}
 
 @media (max-width:480px){
   body{padding:20px 12px 70px;}

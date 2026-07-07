@@ -40,7 +40,7 @@ const RARITY_LABEL = {rare:'Rare', epic:'Epic', legendary:'Legendary', mythic:'M
 const STORAGE_KEY = 'spriteLockerCollectionV3';
 
 let state = loadState();
-let filter = {rarity:'all', search:'', missingOnly:false};
+let filter = {rarity:'all', search:'', missingOnly:false, showUnreleased:false};
 
 function loadState(){
   try{
@@ -96,9 +96,11 @@ function renderGrid(){
     const vs = sprite.variants || VARIANTS;
     const matchesRarity = filter.rarity==='all' || sprite.rarity===filter.rarity;
     const matchesSearch = sprite.name.toLowerCase().includes(filter.search.toLowerCase());
+    const spriteIsUnreleased = UNRELEASED_SPRITES.includes(sprite.id);
+    const matchesUnreleased = filter.showUnreleased || !spriteIsUnreleased;
     
     const card = document.createElement('div');
-    card.className = 'card' + ((matchesRarity && matchesSearch) ? '' : ' hidden');
+    card.className = 'card' + ((matchesRarity && matchesSearch && matchesUnreleased) ? '' : ' hidden');
 
     const img = document.createElement('img');
     img.className = 'icon';
@@ -135,8 +137,10 @@ function renderGrid(){
       const isCollected = !!state[key(sprite.id,v)];
       if(filter.missingOnly && isCollected) return; 
       
-      const chip = document.createElement('div');
       const isUnreleased = UNRELEASED_VARIANTS.includes(v) || UNRELEASED_SPRITES.includes(sprite.id);
+      if(isUnreleased && !filter.showUnreleased) return;
+
+      const chip = document.createElement('div');
       const currentLevel = state[levelKey(sprite.id, v)] || '1';
       const isMastered = !!state[masterKey(sprite.id, v)];
       
@@ -161,13 +165,14 @@ function renderGrid(){
         <div>${VARIANT_LABEL[v]}</div>
         ${badge}
         <div class="chip-controls" onclick="event.stopPropagation()">
-          <label>LVL:
+          <label class="ctrl-row">
+            <span class="ctrl-label">LVL</span>
             <select class="v-lvl" data-sprite="${sprite.id}" data-var="${v}">
               ${[1,2,3,4,5].map(l => `<option value="${l}" ${currentLevel == l ? 'selected' : ''}>${l}</option>`).join('')}
             </select>
           </label>
-          <label>
-            <span>Mastered</span>
+          <label class="ctrl-row">
+            <span class="ctrl-label">Mastered</span>
             <input type="checkbox" class="v-mast" data-sprite="${sprite.id}" data-var="${v}" ${isMastered ? 'checked' : ''}>
           </label>
         </div>
@@ -227,6 +232,11 @@ document.getElementById('missingOnly').addEventListener('click', function(){
   this.classList.toggle('active', filter.missingOnly);
   renderGrid();
 });
+document.getElementById('showUnreleased').addEventListener('click', function(){
+  filter.showUnreleased = !filter.showUnreleased;
+  this.classList.toggle('active', filter.showUnreleased);
+  renderGrid();
+});
 document.getElementById('search').addEventListener('input', (e)=>{
   filter.search = e.target.value;
   renderGrid();
@@ -239,6 +249,200 @@ document.getElementById('resetBtn').addEventListener('click', ()=>{
     renderProgress();
   }
 });
+document.getElementById('pdfBtn').addEventListener('click', generatePDFReport);
+
+function imageToPNGDataURL(imgSrc){
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      try{
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth || 64;
+        canvas.height = img.naturalHeight || 64;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/png'));
+      }catch(e){ resolve(null); }
+    };
+    img.onerror = () => resolve(null);
+    img.src = imgSrc;
+  });
+}
+
+// Tries fetch()+blob first (avoids canvas "tainted" errors some browsers throw
+// when converting file:// -loaded <img> elements), falls back to direct Image load.
+async function loadImageAsPNGDataURL(src){
+  try{
+    const res = await fetch(src);
+    if(res.ok){
+      const blob = await res.blob();
+      const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+      const pngUrl = await imageToPNGDataURL(dataUrl);
+      if(pngUrl) return pngUrl;
+    }
+  }catch(e){ /* fall through to direct Image attempt */ }
+  return imageToPNGDataURL(src);
+}
+
+async function preloadSpriteImages(){
+  const cache = {};
+  const tasks = [];
+  SPRITES.forEach(sprite => {
+    if(UNRELEASED_SPRITES.includes(sprite.id)) return;
+    const vs = (sprite.variants || VARIANTS).filter(v => !UNRELEASED_VARIANTS.includes(v));
+    vs.forEach(v => {
+      const path = `assets/${sprite.id}-${v}.webp`;
+      tasks.push(
+        loadImageAsPNGDataURL(path).then(data => { cache[`${sprite.id}:${v}`] = data; })
+      );
+    });
+  });
+  await Promise.all(tasks);
+  return cache;
+}
+
+async function generatePDFReport(){
+  const btn = document.getElementById('pdfBtn');
+  const originalLabel = btn.textContent;
+  btn.textContent = 'Generating...';
+  btn.disabled = true;
+
+  try{
+    const [imageCache, bgImage] = await Promise.all([
+      preloadSpriteImages(),
+      loadImageAsPNGDataURL('assets/back.png')
+    ]);
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({unit:'pt', format:'a4', orientation:'landscape'});
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+
+    const COLOR_INK = [42,39,31];
+    const COLOR_SOFT = [90,83,66];
+    const COLOR_PREMIUM = [212,175,55];
+    const RARITY_COLOR = {
+      rare:[47,111,118],
+      epic:[91,58,134],
+      legendary:[168,104,31],
+      mythic:[140,31,43]
+    };
+
+    function drawBackground(){
+      if(bgImage){
+        try{ doc.addImage(bgImage, 'PNG', 0, 0, pageWidth, pageHeight); }catch(e){}
+      }
+    }
+
+    // Only released sprites / variants get printed
+    const releasedSprites = SPRITES.filter(s => !UNRELEASED_SPRITES.includes(s.id));
+
+    // Layout config — two columns of sprite rows
+    const marginX = 40;
+    const marginTop = 30;
+    const marginBottom = 30;
+    const columnGap = 30;
+    const columnWidth = (pageWidth - marginX*2 - columnGap) / 2;
+    const iconSize = 28;
+    const maxVariantCols = 8;
+    const cellW = columnWidth / maxVariantCols;
+    const boxSize = 10;
+    const rowBlockGap = 8;
+    const rowHeight = 11 /*label*/ + 6 + iconSize + 3 + boxSize + rowBlockGap;
+
+    // Figure out how many rows land in each column so we can center the whole
+    // block vertically (and split evenly across the two columns / pages).
+    const rowsPerColumn = Math.max(1, Math.floor((pageHeight - marginTop - marginBottom) / rowHeight));
+    const perPage = rowsPerColumn * 2;
+    const pageCount = Math.max(1, Math.ceil(releasedSprites.length / perPage));
+
+    const colX = [marginX, marginX + columnWidth + columnGap];
+
+    for(let p = 0; p < pageCount; p++){
+      if(p > 0) doc.addPage();
+      drawBackground();
+
+      const pageSprites = releasedSprites.slice(p*perPage, p*perPage + perPage);
+      const leftCount = Math.min(pageSprites.length, rowsPerColumn);
+      const rightCount = pageSprites.length - leftCount;
+      const tallestCount = Math.max(leftCount, rightCount);
+      const contentHeight = tallestCount * rowHeight;
+      const startY = marginTop + Math.max(0, (pageHeight - marginTop - marginBottom - contentHeight) / 2) + 8;
+
+      let col = 0;
+      let cursorY = startY;
+
+      pageSprites.forEach((sprite, idx) => {
+        if(idx === leftCount){
+          col = 1;
+          cursorY = startY;
+        }
+
+        const vs = (sprite.variants || VARIANTS).filter(v => !UNRELEASED_VARIANTS.includes(v));
+        const startX = colX[col];
+
+        // Sprite name + rarity tag
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9.5);
+        doc.setTextColor(...COLOR_INK);
+        doc.text(sprite.name.toUpperCase(), startX, cursorY);
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(6.5);
+        doc.setTextColor(...(RARITY_COLOR[sprite.rarity] || COLOR_SOFT));
+        doc.text(RARITY_LABEL[sprite.rarity].toUpperCase(), startX + columnWidth - 40, cursorY);
+
+        let cellX = startX;
+        const iconY = cursorY + 6;
+
+        vs.forEach(v => {
+          const isCollected = !!state[key(sprite.id, v)];
+          const imgData = imageCache[`${sprite.id}:${v}`];
+
+          if(imgData){
+            try{
+              doc.addImage(imgData, 'PNG', cellX, iconY, iconSize, iconSize);
+            }catch(e){}
+          }
+
+          // checkbox
+          const boxX = cellX + (iconSize - boxSize)/2;
+          const boxY = iconY + iconSize + 3;
+          doc.setDrawColor(...COLOR_INK);
+
+          if(isCollected){
+            doc.setFillColor(...COLOR_PREMIUM);
+            doc.rect(boxX, boxY, boxSize, boxSize, 'FD');
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(7.5);
+            doc.setTextColor(...COLOR_INK);
+            doc.text('X', boxX + boxSize/2, boxY + boxSize - 2.2, {align:'center'});
+          } else {
+            doc.setFillColor(255,255,255);
+            doc.rect(boxX, boxY, boxSize, boxSize, 'FD');
+          }
+
+          cellX += cellW;
+        });
+
+        cursorY += rowHeight;
+      });
+    }
+
+    doc.save('extraction-manifesto-report.pdf');
+  }catch(err){
+    alert('Erro ao gerar o PDF: ' + err.message);
+  }finally{
+    btn.textContent = originalLabel;
+    btn.disabled = false;
+  }
+}
+
 document.getElementById('exportBtn').addEventListener('click', ()=>{
   const blob = new Blob([JSON.stringify(state,null,2)], {type:'application/json'});
   const url = URL.createObjectURL(blob);

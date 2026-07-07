@@ -41,18 +41,23 @@
     <div class="pill" data-rarity="legendary">Legendary</div>
     <div class="pill" data-rarity="mythic">Mythic</div>
     <div class="pill" id="missingOnly">Missing Only</div>
-    <div class="actions">
-      <button class="iconbtn" id="exportBtn">Export</button>
-      <button class="iconbtn" id="importBtn">Import</button>
-      <button class="iconbtn" id="resetBtn">Reset</button>
-    </div>
+    <div class="pill" id="showUnreleased">Show Unreleased</div>
   </div>
 
   <div class="grid" id="grid"></div>
 
-  <footer>UNOFFICIAL TRACKER · CUSTOM MADE · CH.7 TEMP.3</footer>
+  <footer>
+    <div class="footer-actions">
+      <button class="iconbtn" id="pdfBtn">PDF Report</button>
+      <button class="iconbtn" id="exportBtn">Export JSON</button>
+      <button class="iconbtn" id="importBtn">Import JSON</button>
+      <button class="iconbtn danger" id="resetBtn">Reset</button>
+    </div>
+    <div class="footer-note">UNOFFICIAL TRACKER · CUSTOM MADE · CH.7 TEMP.3</div>
+  </footer>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
