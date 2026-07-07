@@ -94,8 +94,6 @@ function renderGrid(){
   
   SPRITES.forEach(sprite=>{
     const vs = sprite.variants || VARIANTS;
-    const got = spriteCollectedCount(sprite);
-    const complete = got === vs.length;
     const matchesRarity = filter.rarity==='all' || sprite.rarity===filter.rarity;
     const matchesSearch = sprite.name.toLowerCase().includes(filter.search.toLowerCase());
     
@@ -139,14 +137,26 @@ function renderGrid(){
       
       const chip = document.createElement('div');
       const isUnreleased = UNRELEASED_VARIANTS.includes(v) || UNRELEASED_SPRITES.includes(sprite.id);
-      
-      chip.className = 'chip' + (isCollected ? ' on' : '') + (isUnreleased ? ' unreleased' : '');
-      const badge = isUnreleased ? '<span class="chip-badge">Soon</span>' : '';
-      
       const currentLevel = state[levelKey(sprite.id, v)] || '1';
       const isMastered = !!state[masterKey(sprite.id, v)];
+      
+      // CONDIÇÃO PREMIUM COM EXCEÇÃO PARA GUMMY:
+      // Se for gummy: basta estar Extracted + Mastered.
+      // Outras variantes: Extracted + LVL 5 + Mastered.
+      let isPremium = false;
+      if (sprite.id === 'dream') { 
+        isPremium = isCollected && isMastered;
+      } else {
+        isPremium = isCollected && currentLevel === '5' && isMastered;
+      }
+
+      chip.className = 'chip' + (isCollected ? ' on' : '') + (isUnreleased ? ' unreleased' : '') + (isPremium ? ' premium-complete' : '');
+      
+      const badge = isUnreleased ? '<span class="chip-badge">Soon</span>' : '';
+      const premiumLabel = isPremium ? '<span class="premium-badge">Done</span>' : '';
 
       chip.innerHTML = `
+        ${premiumLabel}
         <img class="chip-thumb" src="assets/${sprite.id}-${v}.webp" onerror="if(this.dataset.s!=='1'){this.dataset.s='1';this.src='assets/temp-${sprite.id}-cube.webp';}else{this.style.visibility='hidden';}">
         <div>${VARIANT_LABEL[v]}</div>
         ${badge}
@@ -176,9 +186,9 @@ function renderGrid(){
         const k = key(sprite.id, v);
         if (!state[k]) {
           state[k] = true;
-          renderGrid(); 
         }
         saveState();
+        renderGrid(); 
         renderProgress();
       });
       
@@ -188,10 +198,10 @@ function renderGrid(){
           const k = key(sprite.id, v);
           if (!state[k]) {
             state[k] = true;
-            renderGrid();
           }
         }
         saveState();
+        renderGrid();
         renderProgress();
       });
 
@@ -200,14 +210,6 @@ function renderGrid(){
     
     main.appendChild(variantsRow);
     card.appendChild(main);
-
-    if(complete){
-      const stamp = document.createElement('div');
-      stamp.className = 'stamp-overlay';
-      stamp.textContent = 'Extracted';
-      card.appendChild(stamp);
-    }
-
     grid.appendChild(card);
   });
 }

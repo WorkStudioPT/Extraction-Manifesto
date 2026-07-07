@@ -11,6 +11,7 @@
   --epic:#5b3a86;
   --legendary:#a8681f;
   --mythic:#8c1f2b;
+  --premium:#d4af37;
 }
 *{box-sizing:border-box;}
 body{
@@ -91,7 +92,6 @@ h1{
   margin-left: 4px;
   text-transform: uppercase;
 }
-/* Cor personalizada para o contador de Mastered */
 .mastered-count-color {
   color: var(--legendary);
 }
@@ -115,7 +115,7 @@ h1{
   transition: width 0.3s ease-out;
 }
 
-/* CONTROLS */
+/* CONTROLS & ACTIONS */
 .controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:20px 0 16px;}
 input[type=text]{
   flex:1;min-width:180px;
@@ -131,6 +131,13 @@ input[type=text]:focus{outline:none;border-color:var(--stamp);}
 }
 .pill.active{color:var(--card);background:var(--ink);}
 .pill:hover:not(.active){border-color:var(--stamp);}
+.actions{display:flex;gap:8px;margin-left:auto;}
+.iconbtn{
+  background:var(--ink);border:2px solid var(--ink);color:var(--card);
+  padding:8px 12px;font-size:11px;cursor:pointer;font-family:'JetBrains Mono';font-weight:700;
+  text-transform:uppercase;transition: 0.1s;
+}
+.iconbtn:hover{background:var(--stamp);border-color:var(--stamp);}
 
 /* GRID */
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(920px,1fr));gap:14px;}
@@ -174,9 +181,31 @@ input[type=text]:focus{outline:none;border-color:var(--stamp);}
   font-family:'JetBrains Mono';font-size:10.5px;font-weight:700;text-transform:uppercase;
   padding:4px 4px 6px;cursor:pointer;user-select:none;transition:.1s;
   display:flex;flex-direction:column;justify-content:space-between;
+  position: relative;
 }
 .chip:hover{border-color:var(--ink);}
 .chip.on{background:var(--ink);color:var(--card);border-color:var(--ink);}
+
+/* ESTILO PREMIUM MÁXIMO */
+.chip.premium-complete {
+  border: 2px dashed var(--premium) !important;
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+}
+.premium-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: var(--premium);
+  color: var(--ink);
+  font-size: 7.5px;
+  font-weight: 800;
+  padding: 1px 3px;
+  border-radius: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  pointer-events: none;
+  line-height: 1;
+}
 
 .chip-thumb{
   width:100%;height:102px;object-fit:contain;display:block;margin-bottom:4px;
@@ -221,6 +250,8 @@ input[type=text]:focus{outline:none;border-color:var(--stamp);}
   background: var(--paper);
   border-color: var(--ink-soft);
 }
+
+/* INPUT CHECKBOX MASTERED */
 .chip-controls input[type="checkbox"] {
   appearance: none;
   width: 11px;
@@ -236,44 +267,28 @@ input[type=text]:focus{outline:none;border-color:var(--stamp);}
   background: var(--paper);
 }
 .chip-controls input[type="checkbox"]:checked {
-  background: var(--stamp);
-  border-color: var(--stamp);
+  background: var(--ink);
+  border-color: var(--ink);
+}
+.chip.on .chip-controls input[type="checkbox"]:checked {
+  background: var(--paper);
+  border-color: var(--card);
 }
 .chip-controls input[type="checkbox"]:checked::after {
-  content: "✓";
+  content: "✕";
   position: absolute;
-  color: white;
-  font-size: 9px;
-  font-weight: bold;
+  color: var(--card);
+  font-size: 8px;
+  font-weight: 800;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
-
-.stamp-overlay{
-  position:absolute;top:38%;left:50%;
-  transform:translate(-50%,-50%) rotate(-16deg);
-  border:4px solid var(--stamp);color:var(--stamp);
-  font-family:'Big Shoulders Stencil';font-weight:800;font-size:22px;
-  padding:2px 14px;letter-spacing:.08em;text-transform:uppercase;
-  opacity:0.88;pointer-events:none;
-  mix-blend-mode:multiply;
+.chip.on .chip-controls input[type="checkbox"]:checked::after {
+  color: var(--ink);
 }
 
-/* FOOTER CONSOLE */
-footer{
-  text-align:center;color:var(--ink-soft);font-size:12px;margin-top:50px;font-family:'JetBrains Mono';
-  display:flex;flex-direction:column;align-items:center;gap:16px;
-}
-.footer-actions{
-  display:flex;gap:8px;justify-content:center;
-}
-.iconbtn{
-  background:var(--ink);border:2px solid var(--ink);color:var(--card);
-  padding:8px 16px;font-size:12px;cursor:pointer;font-family:'JetBrains Mono';font-weight:700;
-  text-transform:uppercase;letter-spacing:0.04em;transition: 0.1s;
-}
-.iconbtn:hover{background:var(--stamp);border-color:var(--stamp);}
+footer{text-align:center;color:var(--ink-soft);font-size:12px;margin-top:40px;font-family:'JetBrains Mono';}
 
 @media (max-width:480px){
   body{padding:20px 12px 70px;}
