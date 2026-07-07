@@ -13,6 +13,47 @@ const VARIANT_LABEL = {
 const UNRELEASED_VARIANTS = ['gem', 'holofoil', 'cube', 'quack'];
 const UNRELEASED_SPRITES = ['air', 'seven', 'batman', 'johnwick'];
 
+// Approximate drop chances (%) per rarity tier, sourced from fortnite.gg/sprites.
+// Some values are extrapolated from the same rarity tier where an exact figure
+// wasn't available — treat as a close estimate, not an official guarantee.
+const DROP_RATES = {
+  water:       {normal:12.83, gold:0.7,  gummy:0.28, galaxy:0.28},
+  earth:       {normal:12.83, gold:0.7,  gummy:0.28, galaxy:0.28},
+  fire:        {normal:12.83, gold:0.7,  gummy:0.28, galaxy:0.28},
+  fishy:       {normal:13.79, gold:0.17, gummy:0.08, galaxy:0.06},
+  duck:        {normal:5.74,  gold:0.07, gummy:0.04, galaxy:0.02},
+  ghost:       {normal:5.74,  gold:0.07, gummy:0.04, galaxy:0.02},
+  king:        {normal:5.74,  gold:0.07, gummy:0.04, galaxy:0.02},
+  demon:       {normal:5.74,  gold:0.07, gummy:0.04, galaxy:0.02},
+  aura:        {normal:5.74,  gold:0.07, gummy:0.04, galaxy:0.02},
+  striker:     {normal:5.74,  gold:0.07, gummy:0.04, galaxy:0.02},
+  dream:       {normal:2.63,  gold:0.03, gummy:0.02, galaxy:0.01},
+  boss:        {normal:2.63,  gold:0.03, gummy:0.02, galaxy:0.01},
+  punk:        {normal:2.05,  gold:0.03, gummy:0.02, galaxy:0.01},
+  zeropoint:   {normal:0.000098, gold:0.0000012, gummy:0.0000006, galaxy:0.0000004},
+  grim:        {normal:0.000098, gold:0.0000012, gummy:0.0000006, galaxy:0.0000004},
+  burntpeanut: {normal:1.01},
+};
+
+const SPRITE_LOCATION = {
+  water: 'Spotted near rivers and beaches',
+  earth: 'Found wandering around forests and wooded regions',
+  fire: 'Appears in cities, towns and high-traffic points of interest',
+  duck: 'Found near the vaults at Sinister Strip and Frosted Flats',
+  ghost: 'Can appear anywhere, but only during the nighttime cycle',
+  dream: 'Found rarely in Sprite Chests',
+  demon: 'Dropped from Sprite Chests and Rare Chests',
+  punk: 'Found in Sprite Chests or Rare Chests',
+  king: 'Found in Sprite Chests, Rare Chests, or looted from AI bots',
+  burntpeanut: 'Intended source is Relic Chests',
+  zeropoint: 'Found rarely in Sprite Chests and Relic Chests',
+  fishy: 'Spotted near high, mountainous areas and while fishing',
+  striker: 'Found in Sprite Chests around the map',
+  aura: 'Found in Sprite Chests around the map',
+  boss: 'Guaranteed to drop when you defeat a boss NPC',
+  grim: 'Found rarely in Sprite Chests',
+};
+
 const SPRITES = [
   {id:'water',       name:'Water',           rarity:'rare',      ability:'Regenerates shield near water.'},
   {id:'earth',       name:'Earth',           rarity:'rare',      ability:'Chance for extra rare loot when opening chests.'},
@@ -56,14 +97,26 @@ function key(spriteId, variant){ return spriteId + ':' + variant; }
 function levelKey(spriteId, variant){ return spriteId + ':' + variant + ':_level'; }
 function masterKey(spriteId, variant){ return spriteId + ':' + variant + ':_mastered'; }
 
+function relevantSlots(){
+  const slots = [];
+  SPRITES.forEach(s => {
+    if(!filter.showUnreleased && UNRELEASED_SPRITES.includes(s.id)) return;
+    const vs = s.variants || VARIANTS;
+    vs.forEach(v => {
+      if(!filter.showUnreleased && UNRELEASED_VARIANTS.includes(v)) return;
+      slots.push({spriteId: s.id, variant: v});
+    });
+  });
+  return slots;
+}
 function totalSlots(){
-  return SPRITES.reduce((acc,s)=> acc + (s.variants || VARIANTS).length, 0);
+  return relevantSlots().length;
 }
 function collectedSlots(){
-  return Object.keys(state).filter(k => !k.includes(':_') && state[k]).length;
+  return relevantSlots().filter(s => state[key(s.spriteId, s.variant)]).length;
 }
 function masteredSlots(){
-  return Object.keys(state).filter(k => k.includes(':_mastered') && state[k]).length;
+  return relevantSlots().filter(s => state[masterKey(s.spriteId, s.variant)]).length;
 }
 
 function renderProgress(){
@@ -82,6 +135,64 @@ function renderProgress(){
     fill.style.width = percentage + '%';
   }
 }
+
+function formatPct(n){
+  if(n === undefined || n === null) return '—';
+  if(n === 0) return '0%';
+  if(n < 0.001) return n.toFixed(6).replace(/0+$/,'').replace(/\.$/,'') + '%';
+  if(n < 1) return n.toFixed(2) + '%';
+  return n.toFixed(2).replace(/\.?0+$/,'') + '%';
+}
+
+function openSpriteModal(sprite){
+  const overlay = document.getElementById('spriteModalOverlay');
+  const card = document.getElementById('spriteModalCard');
+  const vs = sprite.variants || VARIANTS;
+  const rates = DROP_RATES[sprite.id] || {};
+  const location = SPRITE_LOCATION[sprite.id];
+
+  const variantRows = vs.map(v => {
+    const isUnreleased = UNRELEASED_VARIANTS.includes(v) || UNRELEASED_SPRITES.includes(sprite.id);
+    const pct = isUnreleased ? 0 : rates[v];
+    return `
+      <div class="modal-variant-row${isUnreleased ? ' unreleased' : ''}">
+        <img class="modal-variant-thumb" src="assets/${sprite.id}-${v}.webp" onerror="this.style.visibility='hidden'">
+        <div class="modal-variant-name">${VARIANT_LABEL[v]}</div>
+        <div class="modal-variant-pct">${isUnreleased ? 'Unreleased' : formatPct(pct)}</div>
+      </div>
+    `;
+  }).join('');
+
+  card.innerHTML = `
+    <button class="modal-close" id="modalCloseBtn">&times;</button>
+    <div class="modal-head">
+      <img class="modal-icon" src="assets/${sprite.id}-normal.webp" alt="${sprite.name}" onerror="this.style.visibility='hidden'">
+      <div>
+        <div class="modal-title">${sprite.name}</div>
+        <div class="rarity-tag ${sprite.rarity}" style="display:inline-block;margin-bottom:8px;">${RARITY_LABEL[sprite.rarity]}</div>
+        <div class="modal-ability">${sprite.ability}</div>
+        ${location ? `<div class="modal-meta"><div>LOCATION: <b>${location}</b></div></div>` : ''}
+      </div>
+    </div>
+    <div class="modal-variants-title">Variant Drop Chances</div>
+    ${variantRows}
+    <div class="modal-note">Drop rates are approximate community-sourced figures and may shift with in-game hotfixes or seasonal events.</div>
+  `;
+
+  overlay.classList.add('open');
+  document.getElementById('modalCloseBtn').addEventListener('click', closeSpriteModal);
+}
+
+function closeSpriteModal(){
+  document.getElementById('spriteModalOverlay').classList.remove('open');
+}
+
+document.getElementById('spriteModalOverlay').addEventListener('click', (e) => {
+  if(e.target.id === 'spriteModalOverlay') closeSpriteModal();
+});
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'Escape') closeSpriteModal();
+});
 
 function spriteCollectedCount(sprite){
   const vs = sprite.variants || VARIANTS;
@@ -115,6 +226,7 @@ function renderGrid(){
         this.style.opacity = '0.3';
       }
     };
+    img.addEventListener('click', () => openSpriteModal(sprite));
     card.appendChild(img);
 
     const main = document.createElement('div');
@@ -236,6 +348,7 @@ document.getElementById('showUnreleased').addEventListener('click', function(){
   filter.showUnreleased = !filter.showUnreleased;
   this.classList.toggle('active', filter.showUnreleased);
   renderGrid();
+  renderProgress();
 });
 document.getElementById('search').addEventListener('input', (e)=>{
   filter.search = e.target.value;
@@ -313,25 +426,16 @@ async function generatePDFReport(){
   btn.disabled = true;
 
   try{
-    const [imageCache, bgImage] = await Promise.all([
+    const [imageCache, bgImage, checkIcon] = await Promise.all([
       preloadSpriteImages(),
-      loadImageAsPNGDataURL('assets/back.png')
+      loadImageAsPNGDataURL('assets/back.png'),
+      loadImageAsPNGDataURL('assets/check-icon.svg')
     ]);
 
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({unit:'pt', format:'a4', orientation:'landscape'});
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
-
-    const COLOR_INK = [42,39,31];
-    const COLOR_SOFT = [90,83,66];
-    const COLOR_PREMIUM = [212,175,55];
-    const RARITY_COLOR = {
-      rare:[47,111,118],
-      epic:[91,58,134],
-      legendary:[168,104,31],
-      mythic:[140,31,43]
-    };
 
     function drawBackground(){
       if(bgImage){
@@ -342,63 +446,34 @@ async function generatePDFReport(){
     // Only released sprites / variants get printed
     const releasedSprites = SPRITES.filter(s => !UNRELEASED_SPRITES.includes(s.id));
 
-    // Layout config — two columns of sprite rows
-    const marginX = 40;
+    // Layout config — single centered column, one row per sprite
     const marginTop = 30;
     const marginBottom = 30;
-    const columnGap = 30;
-    const columnWidth = (pageWidth - marginX*2 - columnGap) / 2;
-    const iconSize = 28;
-    const maxVariantCols = 8;
-    const cellW = columnWidth / maxVariantCols;
-    const boxSize = 10;
-    const rowBlockGap = 8;
-    const rowHeight = 11 /*label*/ + 6 + iconSize + 3 + boxSize + rowBlockGap;
+    const iconSize = 64;
+    const cellW = 84;
+    const checkSize = 18;
+    const rowGap = 22;
+    const rowHeight = iconSize + 6 + checkSize + rowGap;
 
-    // Figure out how many rows land in each column so we can center the whole
-    // block vertically (and split evenly across the two columns / pages).
-    const rowsPerColumn = Math.max(1, Math.floor((pageHeight - marginTop - marginBottom) / rowHeight));
-    const perPage = rowsPerColumn * 2;
-    const pageCount = Math.max(1, Math.ceil(releasedSprites.length / perPage));
-
-    const colX = [marginX, marginX + columnWidth + columnGap];
+    const rowsPerPage = Math.max(1, Math.floor((pageHeight - marginTop - marginBottom) / rowHeight));
+    const pageCount = Math.max(1, Math.ceil(releasedSprites.length / rowsPerPage));
 
     for(let p = 0; p < pageCount; p++){
       if(p > 0) doc.addPage();
       drawBackground();
 
-      const pageSprites = releasedSprites.slice(p*perPage, p*perPage + perPage);
-      const leftCount = Math.min(pageSprites.length, rowsPerColumn);
-      const rightCount = pageSprites.length - leftCount;
-      const tallestCount = Math.max(leftCount, rightCount);
-      const contentHeight = tallestCount * rowHeight;
-      const startY = marginTop + Math.max(0, (pageHeight - marginTop - marginBottom - contentHeight) / 2) + 8;
+      const pageSprites = releasedSprites.slice(p*rowsPerPage, p*rowsPerPage + rowsPerPage);
+      const contentHeight = pageSprites.length * rowHeight;
+      const startY = marginTop + Math.max(0, (pageHeight - marginTop - marginBottom - contentHeight) / 2);
 
-      let col = 0;
       let cursorY = startY;
 
-      pageSprites.forEach((sprite, idx) => {
-        if(idx === leftCount){
-          col = 1;
-          cursorY = startY;
-        }
-
+      pageSprites.forEach(sprite => {
         const vs = (sprite.variants || VARIANTS).filter(v => !UNRELEASED_VARIANTS.includes(v));
-        const startX = colX[col];
-
-        // Sprite name + rarity tag
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(9.5);
-        doc.setTextColor(...COLOR_INK);
-        doc.text(sprite.name.toUpperCase(), startX, cursorY);
-
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(6.5);
-        doc.setTextColor(...(RARITY_COLOR[sprite.rarity] || COLOR_SOFT));
-        doc.text(RARITY_LABEL[sprite.rarity].toUpperCase(), startX + columnWidth - 40, cursorY);
+        const rowWidth = vs.length * cellW;
+        const startX = (pageWidth - rowWidth) / 2 + (cellW - iconSize) / 2;
 
         let cellX = startX;
-        const iconY = cursorY + 6;
 
         vs.forEach(v => {
           const isCollected = !!state[key(sprite.id, v)];
@@ -406,25 +481,16 @@ async function generatePDFReport(){
 
           if(imgData){
             try{
-              doc.addImage(imgData, 'PNG', cellX, iconY, iconSize, iconSize);
+              doc.addImage(imgData, 'PNG', cellX, cursorY, iconSize, iconSize);
             }catch(e){}
           }
 
-          // checkbox
-          const boxX = cellX + (iconSize - boxSize)/2;
-          const boxY = iconY + iconSize + 3;
-          doc.setDrawColor(...COLOR_INK);
-
-          if(isCollected){
-            doc.setFillColor(...COLOR_PREMIUM);
-            doc.rect(boxX, boxY, boxSize, boxSize, 'FD');
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(7.5);
-            doc.setTextColor(...COLOR_INK);
-            doc.text('X', boxX + boxSize/2, boxY + boxSize - 2.2, {align:'center'});
-          } else {
-            doc.setFillColor(255,255,255);
-            doc.rect(boxX, boxY, boxSize, boxSize, 'FD');
+          if(isCollected && checkIcon){
+            const checkX = cellX + (iconSize - checkSize)/2;
+            const checkY = cursorY + iconSize + 6;
+            try{
+              doc.addImage(checkIcon, 'PNG', checkX, checkY, checkSize, checkSize);
+            }catch(e){}
           }
 
           cellX += cellW;

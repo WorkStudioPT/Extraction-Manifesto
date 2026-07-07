@@ -162,7 +162,9 @@ input[type=text]:focus{outline:none;border-color:var(--stamp);}
 .icon{
   width:92px;height:92px;flex-shrink:0;object-fit:cover;
   background:var(--paper);border:2px solid var(--line);border-radius:6px;
+  cursor:pointer;transition:.12s;
 }
+.icon:hover{border-color:var(--stamp);transform:scale(1.03);}
 .card-name{font-family:'Big Shoulders Stencil';font-weight:800;font-size:19px;text-transform:uppercase;letter-spacing:.02em;}
 .rarity-tag{
   font-family:'JetBrains Mono';font-size:10px;letter-spacing:.06em;text-transform:uppercase;
@@ -313,9 +315,85 @@ footer{
 }
 .footer-note{text-align:center;color:var(--ink-soft);font-size:12px;font-family:'JetBrains Mono';}
 
+/* SPRITE DETAIL MODAL */
+.modal-overlay{
+  display:none;
+  position:fixed;inset:0;
+  background:rgba(20,17,12,.72);
+  z-index:100;
+  align-items:center;justify-content:center;
+  padding:24px;
+  overflow-y:auto;
+}
+.modal-overlay.open{display:flex;}
+.modal-card{
+  background:var(--card);border:2px solid var(--ink);
+  max-width:640px;width:100%;max-height:90vh;overflow-y:auto;
+  box-shadow:8px 8px 0 rgba(0,0,0,.3);
+  padding:24px;position:relative;
+}
+.modal-close{
+  position:absolute;top:14px;right:14px;
+  background:var(--ink);color:var(--card);border:none;
+  width:28px;height:28px;font-size:16px;font-weight:800;cursor:pointer;
+  font-family:'JetBrains Mono';line-height:1;
+}
+.modal-close:hover{background:var(--stamp);}
+.modal-head{display:flex;gap:16px;align-items:flex-start;margin-bottom:14px;padding-right:32px;}
+.modal-icon{
+  width:84px;height:84px;flex-shrink:0;object-fit:cover;
+  background:var(--paper);border:2px solid var(--line);border-radius:6px;
+}
+.modal-title{font-family:'Big Shoulders Stencil';font-weight:800;font-size:26px;text-transform:uppercase;line-height:1;margin-bottom:6px;}
+.modal-ability{color:var(--ink-soft);font-size:13.5px;font-weight:600;line-height:1.4;margin-bottom:8px;}
+.modal-meta{display:flex;flex-wrap:wrap;gap:14px;font-family:'JetBrains Mono';font-size:10.5px;color:var(--ink-soft);}
+.modal-meta b{color:var(--ink);}
+.modal-variants-title{
+  font-family:'JetBrains Mono';font-size:11px;font-weight:700;letter-spacing:.05em;
+  color:var(--ink-soft);margin:18px 0 10px;text-transform:uppercase;
+  border-top:1px dashed var(--line);padding-top:14px;
+}
+.modal-variant-row{
+  display:flex;align-items:center;gap:12px;
+  padding:8px 0;border-bottom:1px dashed var(--line);
+}
+.modal-variant-row:last-child{border-bottom:none;}
+.modal-variant-thumb{
+  width:40px;height:40px;object-fit:contain;flex-shrink:0;
+  background:rgba(255,255,255,.35);border:1px solid var(--line);border-radius:4px;
+}
+.modal-variant-name{font-family:'Rajdhani';font-weight:700;font-size:14px;flex:1;}
+.modal-variant-pct{
+  font-family:'JetBrains Mono';font-size:12px;font-weight:700;color:var(--stamp);
+  min-width:70px;text-align:right;
+}
+.modal-variant-row.unreleased .modal-variant-name{color:var(--ink-soft);opacity:.65;}
+.modal-variant-row.unreleased .modal-variant-pct{color:var(--ink-soft);opacity:.65;}
+.modal-note{
+  margin-top:14px;font-size:11px;color:var(--ink-soft);opacity:.75;
+  font-style:italic;line-height:1.4;
+}
+
 @media (max-width:480px){
   body{padding:20px 12px 70px;}
   .card{flex-direction:column;}
   .icon{width:100%;height:160px;}
-  .variants{grid-template-columns:repeat(2,1fr);}
+  .variants{
+    display:flex;
+    grid-template-columns:none;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+    gap:10px;
+    padding-bottom:6px;
+    padding-left:0;
+    scrollbar-width:thin;
+  }
+  .chip{
+    flex:0 0 44%;
+    scroll-snap-align:start;
+  }
+  .modal-card{padding:18px;max-height:85vh;}
+  .modal-head{flex-direction:column;align-items:center;text-align:center;}
+  .modal-meta{justify-content:center;}
 }
