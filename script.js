@@ -10,7 +10,7 @@ const VARIANT_LABEL = {
   quack: 'Quack', 
 };
 
-const UNRELEASED_VARIANTS = ['gem', 'holofoil', 'cube', 'quack'];
+const UNRELEASED_VARIANTS = ['gem', 'cube', 'quack'];
 const UNRELEASED_SPRITES = ['air', 'seven', 'batman', 'johnwick'];
 
 // Approximate drop chances (%) per rarity tier, sourced from fortnite.gg/sprites.
