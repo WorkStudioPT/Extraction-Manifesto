@@ -374,6 +374,120 @@ footer{
   font-style:italic;line-height:1.4;
 }
 
+/* ================= RELEASE MANAGER PANEL ================= */
+.release-panel {
+  border: 2px solid var(--ink);
+  margin-top: 40px;
+  background: var(--card);
+  padding: 20px 24px;
+  margin-bottom: 16px;
+  box-shadow: 4px 4px 0 rgba(42, 39, 31, .16);
+  position: relative;
+}
+.release-panel h3 {
+  font-family: 'Big Shoulders Stencil';
+  font-size: 18px;
+  margin: 0 0 14px 0;
+  color: var(--ink);
+  text-transform: uppercase;
+  letter-spacing: .02em;
+}
+.release-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.release-sprite-group {
+  background: var(--paper);
+  border: 2px solid var(--line);
+  padding: 10px 12px;
+  position: relative;
+}
+.release-sprite-group::before {
+  content:"";position:absolute;top:0;left:0;right:0;height:2px;
+  background: var(--stamp);
+}
+.release-sprite-name {
+  font-family: 'Big Shoulders Stencil';
+  font-size: 14px;
+  color: var(--ink);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  letter-spacing: .02em;
+}
+.release-sprite-name .toggle-all {
+  font-size: 9px;
+  font-family: 'JetBrains Mono';
+  color: var(--stamp);
+  cursor: pointer;
+  text-transform: uppercase;
+  font-weight: 700;
+  border: 1px solid var(--line);
+  padding: 2px 6px;
+  background: var(--card);
+  transition: .1s;
+}
+.release-sprite-name .toggle-all:hover {
+  background: var(--stamp);
+  color: var(--card);
+  border-color: var(--stamp);
+}
+.release-variant-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.release-variant-chip {
+  font-size: 9.5px;
+  font-family: 'JetBrains Mono';
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  cursor: pointer;
+  border: 2px solid var(--line);
+  background: var(--paper);
+  color: var(--ink-soft);
+  transition: .1s;
+}
+.release-variant-chip.released {
+  background: var(--ink);
+  color: var(--card);
+  border-color: var(--ink);
+}
+.release-variant-chip:hover {
+  border-color: var(--stamp);
+  color: var(--stamp);
+}
+.release-variant-chip.released:hover {
+  border-color: var(--stamp);
+  background: var(--stamp);
+  color: var(--card);
+}
+.release-toggle-btn {
+  background: var(--ink);
+  border: 2px solid var(--ink);
+  color: var(--card);
+  padding: 8px 14px;
+  font-size: 11px;
+  font-family: 'JetBrains Mono';
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: .1s;
+  margin-right: 8px;
+  margin-bottom: 8px;
+}
+.release-toggle-btn:hover {
+  background: var(--stamp);
+  border-color: var(--stamp);
+}
+
 @media (max-width:480px){
   body{padding:20px 12px 70px;}
   .card{flex-direction:column;}
@@ -396,4 +510,7 @@ footer{
   .modal-card{padding:18px;max-height:85vh;}
   .modal-head{flex-direction:column;align-items:center;text-align:center;}
   .modal-meta{justify-content:center;}
+  .release-grid {
+    grid-template-columns: 1fr;
+  }
 }

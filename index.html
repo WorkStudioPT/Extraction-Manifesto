@@ -50,8 +50,20 @@
     <div class="modal-card" id="spriteModalCard"></div>
   </div>
 
+  <!-- Release Manager Panel -->
+  <div class="release-panel" id="releasePanel" style="display:none;">
+    <h3>Release Manager — Mark which Sprites & Variants have been released</h3>
+    <div style="margin-bottom:12px;">
+      <button class="release-toggle-btn" id="toggleAllReleased">Mark All as Released</button>
+      <button class="release-toggle-btn" id="toggleAllUnreleased">Unmark All (Unreleased)</button>
+      <button class="release-toggle-btn" id="closeReleasePanel">Close Panel</button>
+    </div>
+    <div class="release-grid" id="releaseGrid"></div>
+  </div>
+
   <footer>
     <div class="footer-actions">
+      <button class="iconbtn" id="releaseManagerBtn">Release Manager</button>
       <button class="iconbtn" id="pdfBtn">PDF Report</button>
       <button class="iconbtn" id="exportBtn">Export JSON</button>
       <button class="iconbtn" id="importBtn">Import JSON</button>

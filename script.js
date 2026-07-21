@@ -10,9 +10,6 @@ const VARIANT_LABEL = {
   quack: 'Quack', 
 };
 
-const UNRELEASED_VARIANTS = ['gem', 'cube', 'quack'];
-const UNRELEASED_SPRITES = ['air', 'seven', 'batman', 'johnwick'];
-
 // Approximate drop chances (%) per rarity tier, sourced from fortnite.gg/sprites.
 // Some values are extrapolated from the same rarity tier where an exact figure
 // wasn't available — treat as a close estimate, not an official guarantee.
@@ -55,6 +52,7 @@ const SPRITE_LOCATION = {
 };
 
 const SPRITES = [
+  {id:'batman',      name:'Batman',          rarity:'legendary', ability:'Gears cooldowns are significantly reduced.'},
   {id:'water',       name:'Water',           rarity:'rare',      ability:'Regenerates shield near water.'},
   {id:'earth',       name:'Earth',           rarity:'rare',      ability:'Chance for extra rare loot when opening chests.'},
   {id:'fire',        name:'Fire',            rarity:'rare',      ability:'Fire explosion upon dealing enough damage.'},
@@ -65,6 +63,7 @@ const SPRITES = [
   {id:'punk',        name:'Punk',            rarity:'legendary', ability:'Mysterious effect... could be nothing or everything.'},
   {id:'king',        name:'King',            rarity:'epic',      ability:'More pickaxe damage.'},
   {id:'burntpeanut', name:'Burnt Peanut',    rarity:'mythic',    ability:'Chance for more loot (sometimes mythic) upon elimination.', variants:['normal']},
+  {id:'vinijr',      name:'Vini Jr.',        rarity:'mythic',    ability:'Sprinting for a short time makes your slide destructive. Slidekicking enemies increases rate of fire and reload speed.', variants:['normal']},
   {id:'zeropoint',   name:'Zero Point',      rarity:'mythic',    ability:'Creates a mini shield bubble when healing.'},
   {id:'fishy',       name:'Fishy',           rarity:'rare',      ability:'Increased swim and sprint speed.'},
   {id:'striker',     name:'Striker',         rarity:'epic',      ability:'Overdrive when climbing, vaulting or wall-running.'},
@@ -73,14 +72,15 @@ const SPRITES = [
   {id:'grim',        name:'Grim',            rarity:'mythic',    ability:'Marks whoever attacks you for a few seconds.'},
   {id:'air',         name:'Air',             rarity:'rare',      ability:'Reduces fall damage and increases jump height.'},
   {id:'seven',       name:'The Seven',       rarity:'epic',      ability:'Reveals nearby chests and enemies when perfectly scanning.'},
-  {id:'batman',      name:'Batman',          rarity:'legendary', ability:'Gears cooldowns are significantly reduced.'},
   {id:'johnwick',    name:'John Wick',       rarity:'legendary', ability:'Instantly reloads weapons on weapon eliminations.', variants:['normal']},
 ];
 
 const RARITY_LABEL = {rare:'Rare', epic:'Epic', legendary:'Legendary', mythic:'Mythic'};
 const STORAGE_KEY = 'spriteLockerCollectionV3';
+const RELEASE_KEY = 'spriteLockerReleaseV4';
 
 let state = loadState();
+let releaseState = loadReleaseState();
 let filter = {rarity:'all', search:'', missingOnly:false, showUnreleased:false};
 
 function loadState(){
@@ -93,6 +93,30 @@ function saveState(){
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
+function loadReleaseState(){
+  try{
+    const raw = localStorage.getItem(RELEASE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  }catch(e){ return {}; }
+}
+function saveReleaseState(){
+  localStorage.setItem(RELEASE_KEY, JSON.stringify(releaseState));
+}
+
+function isReleased(spriteId, variant){
+  const k = spriteId + ':' + variant;
+  return releaseState[k] === true;
+}
+function setReleased(spriteId, variant, released){
+  const k = spriteId + ':' + variant;
+  if (released) {
+    releaseState[k] = true;
+  } else {
+    delete releaseState[k];
+  }
+  saveReleaseState();
+}
+
 function key(spriteId, variant){ return spriteId + ':' + variant; }
 function levelKey(spriteId, variant){ return spriteId + ':' + variant + ':_level'; }
 function masterKey(spriteId, variant){ return spriteId + ':' + variant + ':_mastered'; }
@@ -100,10 +124,9 @@ function masterKey(spriteId, variant){ return spriteId + ':' + variant + ':_mast
 function relevantSlots(){
   const slots = [];
   SPRITES.forEach(s => {
-    if(!filter.showUnreleased && UNRELEASED_SPRITES.includes(s.id)) return;
     const vs = s.variants || VARIANTS;
     vs.forEach(v => {
-      if(!filter.showUnreleased && UNRELEASED_VARIANTS.includes(v)) return;
+      if(!filter.showUnreleased && !isReleased(s.id, v)) return;
       slots.push({spriteId: s.id, variant: v});
     });
   });
@@ -129,7 +152,7 @@ function renderProgress(){
   document.getElementById('masteredCountText').innerHTML = mastered + '<span>/ ' + total + ' Mastered</span>';
   document.getElementById('pctText').textContent = Math.round(percentage) + '%';
   document.getElementById('totalMeta').textContent = total;
-  
+
   const fill = document.getElementById('trackFill');
   if (fill) {
     fill.style.width = percentage + '%';
@@ -152,7 +175,7 @@ function openSpriteModal(sprite){
   const location = SPRITE_LOCATION[sprite.id];
 
   const variantRows = vs.map(v => {
-    const isUnreleased = UNRELEASED_VARIANTS.includes(v) || UNRELEASED_SPRITES.includes(sprite.id);
+    const isUnreleased = !isReleased(sprite.id, v);
     const pct = isUnreleased ? 0 : rates[v];
     return `
       <div class="modal-variant-row${isUnreleased ? ' unreleased' : ''}">
@@ -202,14 +225,15 @@ function spriteCollectedCount(sprite){
 function renderGrid(){
   const grid = document.getElementById('grid');
   grid.innerHTML = '';
-  
+
   SPRITES.forEach(sprite=>{
     const vs = sprite.variants || VARIANTS;
     const matchesRarity = filter.rarity==='all' || sprite.rarity===filter.rarity;
     const matchesSearch = sprite.name.toLowerCase().includes(filter.search.toLowerCase());
-    const spriteIsUnreleased = UNRELEASED_SPRITES.includes(sprite.id);
-    const matchesUnreleased = filter.showUnreleased || !spriteIsUnreleased;
-    
+
+    const hasReleasedVariant = vs.some(v => isReleased(sprite.id, v));
+    const matchesUnreleased = filter.showUnreleased || hasReleasedVariant;
+
     const card = document.createElement('div');
     card.className = 'card' + ((matchesRarity && matchesSearch && matchesUnreleased) ? '' : ' hidden');
 
@@ -244,21 +268,18 @@ function renderGrid(){
 
     const variantsRow = document.createElement('div');
     variantsRow.className = 'variants';
-    
+
     vs.forEach(v=>{
       const isCollected = !!state[key(sprite.id,v)];
       if(filter.missingOnly && isCollected) return; 
-      
-      const isUnreleased = UNRELEASED_VARIANTS.includes(v) || UNRELEASED_SPRITES.includes(sprite.id);
+
+      const isUnreleased = !isReleased(sprite.id, v);
       if(isUnreleased && !filter.showUnreleased) return;
 
       const chip = document.createElement('div');
       const currentLevel = state[levelKey(sprite.id, v)] || '1';
       const isMastered = !!state[masterKey(sprite.id, v)];
-      
-      // CONDIÇÃO PREMIUM COM EXCEÇÃO PARA GUMMY:
-      // Se for gummy: basta estar Extracted + Mastered.
-      // Outras variantes: Extracted + LVL 5 + Mastered.
+
       let isPremium = false;
       if (sprite.id === 'dream') { 
         isPremium = isCollected && isMastered;
@@ -267,7 +288,7 @@ function renderGrid(){
       }
 
       chip.className = 'chip' + (isCollected ? ' on' : '') + (isUnreleased ? ' unreleased' : '') + (isPremium ? ' premium-complete' : '');
-      
+
       const badge = isUnreleased ? '<span class="chip-badge">Soon</span>' : '';
       const premiumLabel = isPremium ? '<span class="premium-badge">Done</span>' : '';
 
@@ -289,7 +310,7 @@ function renderGrid(){
           </label>
         </div>
       `;
-      
+
       chip.addEventListener('click', () => {
         const k = key(sprite.id,v);
         state[k] = !state[k];
@@ -308,7 +329,7 @@ function renderGrid(){
         renderGrid(); 
         renderProgress();
       });
-      
+
       chip.querySelector('.v-mast').addEventListener('change', (e) => {
         state[masterKey(sprite.id, v)] = e.target.checked;
         if (e.target.checked) {
@@ -324,13 +345,106 @@ function renderGrid(){
 
       variantsRow.appendChild(chip);
     });
-    
+
     main.appendChild(variantsRow);
     card.appendChild(main);
     grid.appendChild(card);
   });
 }
 
+/* ================= RELEASE MANAGER ================= */
+function renderReleaseManager(){
+  const grid = document.getElementById('releaseGrid');
+  grid.innerHTML = '';
+
+  SPRITES.forEach(sprite => {
+    const vs = sprite.variants || VARIANTS;
+    const group = document.createElement('div');
+    group.className = 'release-sprite-group';
+
+    const allReleased = vs.every(v => isReleased(sprite.id, v));
+
+    const nameDiv = document.createElement('div');
+    nameDiv.className = 'release-sprite-name';
+    nameDiv.innerHTML = `${sprite.name} <span class="toggle-all" data-sprite="${sprite.id}">${allReleased ? 'Unmark All' : 'Mark All'}</span>`;
+    group.appendChild(nameDiv);
+
+    const variantList = document.createElement('div');
+    variantList.className = 'release-variant-list';
+
+    vs.forEach(v => {
+      const chip = document.createElement('div');
+      const released = isReleased(sprite.id, v);
+      chip.className = 'release-variant-chip' + (released ? ' released' : '');
+      chip.textContent = VARIANT_LABEL[v];
+      chip.dataset.sprite = sprite.id;
+      chip.dataset.variant = v;
+      chip.addEventListener('click', () => {
+        setReleased(sprite.id, v, !released);
+        renderReleaseManager();
+        renderGrid();
+        renderProgress();
+      });
+      variantList.appendChild(chip);
+    });
+
+    group.appendChild(variantList);
+    grid.appendChild(group);
+  });
+
+  // Toggle All for a specific sprite
+  grid.querySelectorAll('.toggle-all').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const spriteId = btn.dataset.sprite;
+      const sprite = SPRITES.find(s => s.id === spriteId);
+      const vs = sprite.variants || VARIANTS;
+      const allReleased = vs.every(v => isReleased(spriteId, v));
+
+      vs.forEach(v => {
+        setReleased(spriteId, v, !allReleased);
+      });
+      renderReleaseManager();
+      renderGrid();
+      renderProgress();
+    });
+  });
+}
+
+// Release Manager buttons
+document.getElementById('releaseManagerBtn').addEventListener('click', () => {
+  const panel = document.getElementById('releasePanel');
+  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+  if (panel.style.display === 'block') {
+    renderReleaseManager();
+  }
+});
+
+document.getElementById('closeReleasePanel').addEventListener('click', () => {
+  document.getElementById('releasePanel').style.display = 'none';
+});
+
+document.getElementById('toggleAllReleased').addEventListener('click', () => {
+  SPRITES.forEach(sprite => {
+    const vs = sprite.variants || VARIANTS;
+    vs.forEach(v => setReleased(sprite.id, v, true));
+  });
+  renderReleaseManager();
+  renderGrid();
+  renderProgress();
+});
+
+document.getElementById('toggleAllUnreleased').addEventListener('click', () => {
+  SPRITES.forEach(sprite => {
+    const vs = sprite.variants || VARIANTS;
+    vs.forEach(v => setReleased(sprite.id, v, false));
+  });
+  renderReleaseManager();
+  renderGrid();
+  renderProgress();
+});
+
+/* ================= FILTERS ================= */
 document.querySelectorAll('.pill[data-rarity]').forEach(pill=>{
   pill.addEventListener('click', ()=>{
     document.querySelectorAll('.pill[data-rarity]').forEach(p=>p.classList.remove('active'));
@@ -406,8 +520,7 @@ async function preloadSpriteImages(){
   const cache = {};
   const tasks = [];
   SPRITES.forEach(sprite => {
-    if(UNRELEASED_SPRITES.includes(sprite.id)) return;
-    const vs = (sprite.variants || VARIANTS).filter(v => !UNRELEASED_VARIANTS.includes(v));
+    const vs = (sprite.variants || VARIANTS).filter(v => isReleased(sprite.id, v));
     vs.forEach(v => {
       const path = `assets/${sprite.id}-${v}.webp`;
       tasks.push(
@@ -444,7 +557,10 @@ async function generatePDFReport(){
     }
 
     // Only released sprites / variants get printed
-    const releasedSprites = SPRITES.filter(s => !UNRELEASED_SPRITES.includes(s.id));
+    const releasedSprites = SPRITES.filter(s => {
+      const vs = s.variants || VARIANTS;
+      return vs.some(v => isReleased(s.id, v));
+    });
 
     // Layout config — single centered column, one row per sprite
     const marginTop = 30;
@@ -469,7 +585,7 @@ async function generatePDFReport(){
       let cursorY = startY;
 
       pageSprites.forEach(sprite => {
-        const vs = (sprite.variants || VARIANTS).filter(v => !UNRELEASED_VARIANTS.includes(v));
+        const vs = (sprite.variants || VARIANTS).filter(v => isReleased(sprite.id, v));
         const rowWidth = vs.length * cellW;
         const startX = (pageWidth - rowWidth) / 2 + (cellW - iconSize) / 2;
 
@@ -510,7 +626,12 @@ async function generatePDFReport(){
 }
 
 document.getElementById('exportBtn').addEventListener('click', ()=>{
-  const blob = new Blob([JSON.stringify(state,null,2)], {type:'application/json'});
+  const exportData = {
+    state: state,
+    releaseState: releaseState,
+    exportedAt: new Date().toISOString()
+  };
+  const blob = new Blob([JSON.stringify(exportData,null,2)], {type:'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -518,6 +639,7 @@ document.getElementById('exportBtn').addEventListener('click', ()=>{
   a.click();
   URL.revokeObjectURL(url);
 });
+
 document.getElementById('importBtn').addEventListener('click', ()=>{
   const input = document.createElement('input');
   input.type = 'file';
@@ -529,8 +651,14 @@ document.getElementById('importBtn').addEventListener('click', ()=>{
     reader.onload = ()=>{
       try{
         const imported = JSON.parse(reader.result);
-        state = imported;
-        saveState();
+        if (imported.state) {
+          state = imported.state;
+          saveState();
+        }
+        if (imported.releaseState) {
+          releaseState = imported.releaseState;
+          saveReleaseState();
+        }
         renderGrid();
         renderProgress();
       }catch(err){
