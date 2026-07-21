@@ -14,22 +14,24 @@ const VARIANT_LABEL = {
 // Some values are extrapolated from the same rarity tier where an exact figure
 // wasn't available — treat as a close estimate, not an official guarantee.
 const DROP_RATES = {
-  water:       {normal:12.83, gold:0.7,  gummy:0.28, galaxy:0.28},
-  earth:       {normal:12.83, gold:0.7,  gummy:0.28, galaxy:0.28},
-  fire:        {normal:12.83, gold:0.7,  gummy:0.28, galaxy:0.28},
-  fishy:       {normal:13.79, gold:0.17, gummy:0.08, galaxy:0.06},
-  duck:        {normal:5.74,  gold:0.07, gummy:0.04, galaxy:0.02},
-  ghost:       {normal:5.74,  gold:0.07, gummy:0.04, galaxy:0.02},
-  king:        {normal:5.74,  gold:0.07, gummy:0.04, galaxy:0.02},
-  demon:       {normal:5.74,  gold:0.07, gummy:0.04, galaxy:0.02},
-  aura:        {normal:5.74,  gold:0.07, gummy:0.04, galaxy:0.02},
-  striker:     {normal:5.74,  gold:0.07, gummy:0.04, galaxy:0.02},
-  dream:       {normal:2.63,  gold:0.03, gummy:0.02, galaxy:0.01},
-  boss:        {normal:2.63,  gold:0.03, gummy:0.02, galaxy:0.01},
-  punk:        {normal:2.05,  gold:0.03, gummy:0.02, galaxy:0.01},
-  zeropoint:   {normal:0.000098, gold:0.0000012, gummy:0.0000006, galaxy:0.0000004},
-  grim:        {normal:0.000098, gold:0.0000012, gummy:0.0000006, galaxy:0.0000004},
+  water:       {normal:12.83, gold:0.7,  gummy:0.28, galaxy:0.28, holofoil:0},
+  earth:       {normal:12.83, gold:0.7,  gummy:0.28, galaxy:0.28, holofoil:0},
+  fire:        {normal:12.83, gold:0.7,  gummy:0.28, galaxy:0.28, holofoil:0},
+  fishy:       {normal:13.79, gold:0.17, gummy:0.08, galaxy:0.06, holofoil:0},
+  duck:        {normal:5.74,  gold:0.07, gummy:0.04, galaxy:0.02, holofoil:0},
+  ghost:       {normal:5.74,  gold:0.07, gummy:0.04, galaxy:0.02, holofoil:0},
+  king:        {normal:5.74,  gold:0.07, gummy:0.04, galaxy:0.02, holofoil:0},
+  demon:       {normal:5.74,  gold:0.07, gummy:0.04, galaxy:0.02, holofoil:0},
+  aura:        {normal:5.74,  gold:0.07, gummy:0.04, galaxy:0.02, holofoil:0},
+  striker:     {normal:5.74,  gold:0.07, gummy:0.04, galaxy:0.02, holofoil:0},
+  dream:       {normal:2.63,  gold:0.03, gummy:0.02, galaxy:0.01, holofoil:0},
+  boss:        {normal:2.63,  gold:0.03, gummy:0.02, galaxy:0.01, holofoil:0},
+  punk:        {normal:2.05,  gold:0.03, gummy:0.02, galaxy:0.01, holofoil:0},
+  zeropoint:   {normal:0.000098, gold:0.0000012, gummy:0.0000006, galaxy:0.0000004, holofoil:0},
+  grim:        {normal:0.000098, gold:0.0000012, gummy:0.0000006, galaxy:0.0000004, holofoil:0},
   burntpeanut: {normal:1.01},
+  seven:       {normal:6.98, gold:0.31, gummy:0.23, galaxy:0.12, holofoil:0.05},
+  batman:      {normal:2.23, gold:0.1, gummy:0.07, galaxy:0.04, holofoil:0.01},
 };
 
 const SPRITE_LOCATION = {
@@ -49,6 +51,7 @@ const SPRITE_LOCATION = {
   aura: 'Found in Sprite Chests around the map',
   boss: 'Guaranteed to drop when you defeat a boss NPC',
   grim: 'Found rarely in Sprite Chests',
+  batman: 'Found rarely in Sprite Chests',
 };
 
 const SPRITES = [
@@ -64,6 +67,7 @@ const SPRITES = [
   {id:'king',        name:'King',            rarity:'epic',      ability:'More pickaxe damage.'},
   {id:'burntpeanut', name:'Burnt Peanut',    rarity:'mythic',    ability:'Chance for more loot (sometimes mythic) upon elimination.', variants:['normal']},
   {id:'vinijr',      name:'Vini Jr.',        rarity:'mythic',    ability:'Sprinting for a short time makes your slide destructive. Slidekicking enemies increases rate of fire and reload speed.', variants:['normal']},
+  {id:'pollo',       name:'Pollo',           rarity:'mythic',    ability:'Upon earning an elimination, slowly replenish shield for you and nearby squad members for a duration.', variants:['normal']},
   {id:'zeropoint',   name:'Zero Point',      rarity:'mythic',    ability:'Creates a mini shield bubble when healing.'},
   {id:'fishy',       name:'Fishy',           rarity:'rare',      ability:'Increased swim and sprint speed.'},
   {id:'striker',     name:'Striker',         rarity:'epic',      ability:'Overdrive when climbing, vaulting or wall-running.'},
