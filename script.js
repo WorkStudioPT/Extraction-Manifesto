@@ -67,7 +67,6 @@ const SPRITES = [
   {id:'king',        name:'King',            rarity:'epic',      ability:'More pickaxe damage.'},
   {id:'burntpeanut', name:'Burnt Peanut',    rarity:'mythic',    ability:'Chance for more loot (sometimes mythic) upon elimination.', variants:['normal']},
   {id:'vinijr',      name:'Vini Jr.',        rarity:'mythic',    ability:'Sprinting for a short time makes your slide destructive. Slidekicking enemies increases rate of fire and reload speed.', variants:['normal']},
-  {id:'pollo',       name:'Pollo',           rarity:'mythic',    ability:'Upon earning an elimination, slowly replenish shield for you and nearby squad members for a duration.', variants:['normal']},
   {id:'zeropoint',   name:'Zero Point',      rarity:'mythic',    ability:'Creates a mini shield bubble when healing.'},
   {id:'fishy',       name:'Fishy',           rarity:'rare',      ability:'Increased swim and sprint speed.'},
   {id:'striker',     name:'Striker',         rarity:'epic',      ability:'Overdrive when climbing, vaulting or wall-running.'},
@@ -77,6 +76,7 @@ const SPRITES = [
   {id:'air',         name:'Air',             rarity:'rare',      ability:'Reduces fall damage and increases jump height.'},
   {id:'seven',       name:'The Seven',       rarity:'epic',      ability:'Reveals nearby chests and enemies when perfectly scanning.'},
   {id:'johnwick',    name:'John Wick',       rarity:'legendary', ability:'Instantly reloads weapons on weapon eliminations.', variants:['normal']},
+  {id:'pollo',       name:'Pollo',           rarity:'mythic',    ability:'Upon earning an elimination, slowly replenish shield for you and nearby squad members for a duration.', variants:['normal']},
 ];
 
 const RARITY_LABEL = {rare:'Rare', epic:'Epic', legendary:'Legendary', mythic:'Mythic'};
