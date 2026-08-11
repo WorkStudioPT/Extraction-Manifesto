@@ -1,4 +1,4 @@
-const VARIANTS = ['normal', 'gold', 'gummy', 'galaxy', 'holofoil', 'gem', 'cube', 'quack'];
+const VARIANTS = ['normal','cube', 'gold', 'quack', 'gummy', 'galaxy', 'gem', 'holofoil'];
 const VARIANT_LABEL = {
   normal: 'Normal', 
   gold: 'Gold', 
@@ -55,28 +55,31 @@ const SPRITE_LOCATION = {
 };
 
 const SPRITES = [
-  {id:'batman',      name:'Batman',          rarity:'legendary', ability:'Gears cooldowns are significantly reduced.'},
-  {id:'water',       name:'Water',           rarity:'rare',      ability:'Regenerates shield near water.'},
-  {id:'earth',       name:'Earth',           rarity:'rare',      ability:'Chance for extra rare loot when opening chests.'},
-  {id:'fire',        name:'Fire',            rarity:'rare',      ability:'Fire explosion upon dealing enough damage.'},
-  {id:'duck',        name:'Duck',            rarity:'epic',      ability:'Emotes or jamming regenerates shield.'},
-  {id:'ghost',       name:'Ghost',           rarity:'epic',      ability:'Briefly turns invisible after reloading.'},
-  {id:'dream',       name:'Dream',           rarity:'legendary', ability:'Random item per level, legendary at max level.'},
-  {id:'demon',       name:'Demon',           rarity:'epic',      ability:'Steals health upon eliminating an opponent.'},
-  {id:'punk',        name:'Punk',            rarity:'legendary', ability:'Mysterious effect... could be nothing or everything.'},
-  {id:'king',        name:'King',            rarity:'epic',      ability:'More pickaxe damage.'},
+  {id:'johnwick',    name:'John Wick',       rarity:'legendary', ability:'Instantly reloads weapons on weapon eliminations.', variants:['normal']},
+  {id:'batman',      name:'Batman',          rarity:'legendary', ability:'Gears cooldowns are significantly reduced.', variants:['normal', 'cube', 'gold', 'gummy', 'galaxy', 'holofoil']},
+  {id:'water',       name:'Water',           rarity:'rare',      ability:'Regenerates shield near water.', variants:['normal', 'gold', 'quack', 'gummy', 'galaxy', 'gem', 'holofoil']},
+  {id:'earth',       name:'Earth',           rarity:'rare',      ability:'Chance for extra rare loot when opening chests.', variants:['normal', 'cube', 'gold', 'quack', 'gummy', 'galaxy', 'gem']},
+  {id:'fire',        name:'Fire',            rarity:'rare',      ability:'Fire explosion upon dealing enough damage.', variants:['normal', 'cube','gold', 'quack', 'gummy', 'galaxy', 'holofoil']},
+  {id:'duck',        name:'Duck',            rarity:'epic',      ability:'Emotes or jamming regenerates shield.', variants:['normal', 'gold', 'gummy', 'galaxy', 'gem']},
+  {id:'ghost',       name:'Ghost',           rarity:'epic',      ability:'Briefly turns invisible after reloading.', variants:['normal', 'gold', 'gummy', 'galaxy', 'holofoil']},
+  {id:'dream',       name:'Dream',           rarity:'legendary', ability:'Random item per level, legendary at max level.', variants:['normal', 'cube', 'gold', 'gummy', 'galaxy']},
+  {id:'demon',       name:'Demon',           rarity:'epic',      ability:'Steals health upon eliminating an opponent.', variants:['normal', 'gold', 'gummy', 'galaxy', 'gem']},
+  {id:'punk',        name:'Punk',            rarity:'legendary', ability:'Mysterious effect... could be nothing or everything.', variants:['normal', 'cube', 'gold', 'gummy', 'galaxy']},
+  {id:'king',        name:'King',            rarity:'epic',      ability:'More pickaxe damage.', variants:['normal', 'gold', 'gummy', 'galaxy', 'holofoil']},
   {id:'vinijr',      name:'Vini Jr.',        rarity:'mythic',    ability:'Sprinting for a short time makes your slide destructive. Slidekicking enemies increases rate of fire and reload speed.', variants:['normal']},
   {id:'burntpeanut', name:'Burnt Peanut',    rarity:'mythic',    ability:'Chance for more loot (sometimes mythic) upon elimination.', variants:['normal']},
-  {id:'zeropoint',   name:'Zero Point',      rarity:'mythic',    ability:'Creates a mini shield bubble when healing.'},
-  {id:'fishy',       name:'Fishy',           rarity:'rare',      ability:'Increased swim and sprint speed.'},
-  {id:'striker',     name:'Striker',         rarity:'epic',      ability:'Overdrive when climbing, vaulting or wall-running.'},
-  {id:'aura',        name:'Aura',            rarity:'epic',      ability:'Gains Shock Rock charge upon dealing damage.'},
-  {id:'boss',        name:'Boss',            rarity:'legendary', ability:'Increases maximum health and shield.'},
-  {id:'grim',        name:'Grim',            rarity:'mythic',    ability:'Marks whoever attacks you for a few seconds.'},
-  {id:'air',         name:'Air',             rarity:'rare',      ability:'Reduces fall damage and increases jump height.'},
-  {id:'seven',       name:'The Seven',       rarity:'epic',      ability:'Reveals nearby chests and enemies when perfectly scanning.'},
-  {id:'johnwick',    name:'John Wick',       rarity:'legendary', ability:'Instantly reloads weapons on weapon eliminations.', variants:['normal']},
+  {id:'zeropoint',   name:'Zero Point',      rarity:'mythic',    ability:'Creates a mini shield bubble when healing.', variants:['normal', 'cube','gold', 'quack', 'gummy', 'galaxy', 'gem' ,'holofoil']},
+  {id:'fishy',       name:'Fishy',           rarity:'rare',      ability:'Increased swim and sprint speed.', variants:['normal', 'cube', 'gold', 'gummy', 'galaxy']},
+  {id:'striker',     name:'Striker',         rarity:'epic',      ability:'Overdrive when climbing, vaulting or wall-running.', variants:['normal', 'gold', 'gummy', 'galaxy', 'holofoil']},
+  {id:'aura',        name:'Aura',            rarity:'epic',      ability:'Gains Shock Rock charge upon dealing damage.', variants:['normal', 'gold', 'gummy', 'galaxy', 'gem']},
+  {id:'boss',        name:'Boss',            rarity:'legendary', ability:'Increases maximum health and shield.', variants:['normal', 'cube', 'gold', 'gummy', 'galaxy']},
+  {id:'grim',        name:'Grim',            rarity:'mythic',    ability:'Marks whoever attacks you for a few seconds.', variants:['normal', 'cube','gold', 'gummy', 'galaxy', 'gem' ,'holofoil']},
+  {id:'air',         name:'Air',             rarity:'rare',      ability:'Reduces fall damage and increases jump height.', variants:['normal', 'gold', 'gummy', 'galaxy', 'holofoil']},
+  {id:'seven',       name:'The Seven',       rarity:'epic',      ability:'Reveals nearby chests and enemies when perfectly scanning.', variants:['normal', 'gold', 'gummy', 'galaxy', 'holofoil']},
+  {id:'ironmouse',   name:'Ironmouse',       rarity:'mythic',    ability:'Regenerate health over time when low. While regenerating, gain Cloak and low gravity!', variants:['normal']},
   {id:'pollo',       name:'Pollo',           rarity:'mythic',    ability:'Upon earning an elimination, slowly replenish shield for you and nearby squad members for a duration.', variants:['normal']},
+  {id:'llama',       name:'Llama',           rarity:'legendary', ability:'Opening ammo boxes has a chance to grant a weapon upgrade.', variants:['normal', 'gold', 'gummy', 'galaxy', 'gem']},
+  {id:'peely',       name:'Peely',           rarity:'legendary', ability:'Emits a ping for players with rare sprites nearby, but marks you on the map.', variants:['normal', 'gold', 'gummy', 'galaxy', 'holofoil']},
 ];
 
 const RARITY_LABEL = {rare:'Rare', epic:'Epic', legendary:'Legendary', mythic:'Mythic'};
