@@ -568,7 +568,7 @@ footer{
 @media (max-width:480px){
   body{padding:20px 12px 70px;}
   .card{flex-direction:column;}
-  .icon{width:100%;height:160px;}
+  .icon{width:100%;height:160px;object-fit:contain;}
   .variants{
     display:flex;
     grid-template-columns:none;
