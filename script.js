@@ -1,19 +1,24 @@
-const VARIANTS = ['normal','cube', 'gold', 'quack', 'gummy', 'galaxy', 'gem', 'holofoil'];
-const VARIANT_LABEL = {
-  normal: 'Normal', 
-  gold: 'Gold', 
-  gummy: 'Gummy', 
+/* =========================================================
+   SEASON 3 — RUNNERS  (your current roster + Release Manager,
+   unchanged — same storage keys, so nothing you've already
+   collected or marked as released is lost)
+   ========================================================= */
+const VARIANTS_S3 = ['normal','cube', 'gold', 'quack', 'gummy', 'galaxy', 'gem', 'holofoil'];
+const VARIANT_LABEL_S3 = {
+  normal: 'Normal',
+  gold: 'Gold',
+  gummy: 'Gummy',
   galaxy: 'Galaxy',
   holofoil: 'Holofoil',
-  gem: 'Gem', 
-  cube: 'Cube', 
-  quack: 'Quack', 
+  gem: 'Gem',
+  cube: 'Cube',
+  quack: 'Quack',
 };
 
 // Approximate drop chances (%) per rarity tier, sourced from fortnite.gg/sprites.
 // Some values are extrapolated from the same rarity tier where an exact figure
 // wasn't available — treat as a close estimate, not an official guarantee.
-const DROP_RATES = {
+const DROP_RATES_S3 = {
   water:       {normal:12.83, gold:0.7,  gummy:0.28, galaxy:0.28, holofoil:0},
   earth:       {normal:12.83, gold:0.7,  gummy:0.28, galaxy:0.28, holofoil:0},
   fire:        {normal:12.83, gold:0.7,  gummy:0.28, galaxy:0.28, holofoil:0},
@@ -34,7 +39,7 @@ const DROP_RATES = {
   batman:      {normal:2.23, gold:0.1, gummy:0.07, galaxy:0.04, holofoil:0.01},
 };
 
-const SPRITE_LOCATION = {
+const SPRITE_LOCATION_S3 = {
   water: 'Spotted near rivers and beaches',
   earth: 'Found wandering around forests and wooded regions',
   fire: 'Appears in cities, towns and high-traffic points of interest',
@@ -54,7 +59,7 @@ const SPRITE_LOCATION = {
   batman: 'Found rarely in Sprite Chests',
 };
 
-const SPRITES = [
+const SPRITES_S3 = [
   {id:'johnwick',    name:'John Wick',       rarity:'legendary', ability:'Instantly reloads weapons on weapon eliminations.', variants:['normal']},
   {id:'batman',      name:'Batman',          rarity:'legendary', ability:'Gears cooldowns are significantly reduced.', variants:['normal', 'cube', 'gold', 'gummy', 'galaxy', 'holofoil']},
   {id:'water',       name:'Water',           rarity:'rare',      ability:'Regenerates shield near water.', variants:['normal', 'gold', 'quack', 'gummy', 'galaxy', 'gem', 'holofoil']},
@@ -82,9 +87,94 @@ const SPRITES = [
   {id:'peely',       name:'Peely',           rarity:'legendary', ability:'Emits a ping for players with rare sprites nearby, but marks you on the map.', variants:['normal', 'gold', 'gummy', 'galaxy', 'holofoil']},
 ];
 
+/* =========================================================
+   SEASON 4 — OVERRIDE
+   Launched 20 AUG 2026. Sprites below reflect everything Epic
+   confirmed at launch. Rarity tiers and exact drop-rate
+   percentages have NOT been officially published yet, so the
+   rarity values are provisional best guesses — tweak them
+   freely once real numbers are known/datamined.
+   No variant is pre-marked released here: use the Release
+   Manager panel to flip on Normal/Gold/Cheat Master per sprite
+   as Epic rolls them out (Normal + Gold are seeded as released
+   by default below, since those were confirmed live day one).
+   ========================================================= */
+const VARIANTS_S4 = ['normal', 'gold', 'cheatmaster'];
+const VARIANT_LABEL_S4 = {
+  normal: 'Normal',
+  gold: 'Gold',
+  cheatmaster: 'Cheat Master',
+};
+
+// Drop rates not yet published for Override — left empty on purpose.
+// formatPct() already renders '—' for any sprite/variant with no entry here.
+const DROP_RATES_S4 = {};
+
+// Location/source data not yet published for Override.
+const SPRITE_LOCATION_S4 = {};
+
+const SPRITES_S4 = [
+  {id:'klombo',     name:'Klombo',       rarity:'epic',      ability:'Grants a random item at each level.', variants:['normal','gold','cheatmaster']},
+  {id:'sonic',      name:'Sonic',        rarity:'legendary', ability:'Gotta go fast — noticeably increases sprint speed.', variants:['normal','gold','cheatmaster']},
+  {id:'tails',      name:'Tails',        rarity:'legendary', ability:'Lets you hover briefly in the air.', variants:['normal','gold','cheatmaster']},
+  {id:'shadow',     name:'Shadow',       rarity:'epic',      ability:'Automatically reloads weapons over time, even unequipped.', variants:['normal','gold','cheatmaster']},
+  {id:'jackrabbit', name:'Jackrabbit',   rarity:'rare',      ability:'Grants an extra jump while mid-air.', variants:['normal','gold','cheatmaster']},
+  {id:'8bit',       name:'8-Bit',        rarity:'epic',      ability:'Guarantees an 8-Bit Shotgun in your first chest, with a damage boost.', variants:['normal','gold','cheatmaster']},
+  {id:'crown',      name:'Crown',        rarity:'mythic',    ability:'Grants bonus Crown Wins after a Victory Royale. Only levels up by winning matches.', variants:['normal','gold','cheatmaster']},
+  {id:'adventure',  name:'Adventure',    rarity:'epic',      ability:'Upgrades a random item in your inventory at each level.', variants:['normal','gold','cheatmaster']},
+  {id:'bush',       name:'Bush',         rarity:'rare',      ability:'Spawns a Bush disguise after a duration; at max level, grants one on elimination.', variants:['normal','gold','cheatmaster']},
+  {id:'jonesy',     name:'Jonesy',       rarity:'rare',      ability:'Recovers some health or shield a short while after taking damage.', variants:['normal','gold','cheatmaster']},
+  {id:'killswitch', name:'Killswitch',   rarity:'epic',      ability:'Improves accuracy while in Hangtime.', variants:['normal','gold','cheatmaster']},
+  {id:'stormscout', name:'Storm Scout',  rarity:'legendary', ability:'Triggers Overdrive after taking enough storm damage; reveals future storm circles at max level.', variants:['normal','gold','cheatmaster']},
+];
+
+/* =========================================================
+   SEASON REGISTRY
+   ========================================================= */
+const SEASONS = {
+  s3: {
+    id: 's3',
+    label: 'Chapter 7',
+    subtitle: 'Runners',
+    tempTag: 'CH.7 · TEMP.3',
+    updated: '25 JUN 2026',
+    storageKey: 'spriteLockerCollectionV3',
+    releaseKey: 'spriteLockerReleaseV4',
+    assetPath: 'assets/runners',
+    ratesNote: 'Drop rates are approximate community-sourced figures and may shift with in-game hotfixes or seasonal events.',
+    variants: VARIANTS_S3,
+    variantLabels: VARIANT_LABEL_S3,
+    dropRates: DROP_RATES_S3,
+    spriteLocation: SPRITE_LOCATION_S3,
+    sprites: SPRITES_S3,
+    theme: 'paper',
+  },
+  s4: {
+    id: 's4',
+    label: 'Chapter 7',
+    subtitle: 'Override',
+    tempTag: 'CH.7 · TEMP.4',
+    updated: '20 AUG 2026',
+    storageKey: 'spriteLockerCollectionV3_s4',
+    releaseKey: 'spriteLockerReleaseV4_s4',
+    assetPath: 'assets/override',
+    ratesNote: 'Drop rates and rarity tiers for Override sprites have not been officially published yet — figures shown are provisional and will be updated as real data becomes available.',
+    variants: VARIANTS_S4,
+    variantLabels: VARIANT_LABEL_S4,
+    dropRates: DROP_RATES_S4,
+    spriteLocation: SPRITE_LOCATION_S4,
+    sprites: SPRITES_S4,
+    theme: 'override',
+  },
+};
+
+const ACTIVE_SEASON_KEY = 'spriteLockerActiveSeason';
 const RARITY_LABEL = {rare:'Rare', epic:'Epic', legendary:'Legendary', mythic:'Mythic'};
-const STORAGE_KEY = 'spriteLockerCollectionV3';
-const RELEASE_KEY = 'spriteLockerReleaseV4';
+
+let currentSeasonId = localStorage.getItem(ACTIVE_SEASON_KEY) || 's4';
+if (!SEASONS[currentSeasonId]) currentSeasonId = 's4';
+
+function season(){ return SEASONS[currentSeasonId]; }
 
 let state = loadState();
 let releaseState = loadReleaseState();
@@ -92,22 +182,22 @@ let filter = {rarity:'all', search:'', missingOnly:false, showUnreleased:false};
 
 function loadState(){
   try{
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(season().storageKey);
     return raw ? JSON.parse(raw) : {};
   }catch(e){ return {}; }
 }
 function saveState(){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  localStorage.setItem(season().storageKey, JSON.stringify(state));
 }
 
 function loadReleaseState(){
   try{
-    const raw = localStorage.getItem(RELEASE_KEY);
+    const raw = localStorage.getItem(season().releaseKey);
     return raw ? JSON.parse(raw) : {};
   }catch(e){ return {}; }
 }
 function saveReleaseState(){
-  localStorage.setItem(RELEASE_KEY, JSON.stringify(releaseState));
+  localStorage.setItem(season().releaseKey, JSON.stringify(releaseState));
 }
 
 function isReleased(spriteId, variant){
@@ -124,17 +214,36 @@ function setReleased(spriteId, variant, released){
   saveReleaseState();
 }
 
+// Season 4 has nothing released by default until you touch the Release
+// Manager. Since Normal + Gold were confirmed live at launch, seed those
+// as released the first time Override's release state is ever loaded
+// (only runs once — after that your own toggles are respected).
+function seedSeasonDefaults(){
+  const s = season();
+  if (s.id === 's4' && Object.keys(releaseState).length === 0) {
+    s.sprites.forEach(sprite => {
+      const vs = sprite.variants || s.variants;
+      vs.forEach(v => {
+        if (v !== 'cheatmaster') releaseState[sprite.id + ':' + v] = true;
+      });
+    });
+    saveReleaseState();
+  }
+}
+seedSeasonDefaults();
+
 function key(spriteId, variant){ return spriteId + ':' + variant; }
 function levelKey(spriteId, variant){ return spriteId + ':' + variant + ':_level'; }
 function masterKey(spriteId, variant){ return spriteId + ':' + variant + ':_mastered'; }
 
 function relevantSlots(){
+  const s = season();
   const slots = [];
-  SPRITES.forEach(s => {
-    const vs = s.variants || VARIANTS;
+  s.sprites.forEach(sp => {
+    const vs = sp.variants || s.variants;
     vs.forEach(v => {
-      if(!filter.showUnreleased && !isReleased(s.id, v)) return;
-      slots.push({spriteId: s.id, variant: v});
+      if(!filter.showUnreleased && !isReleased(sp.id, v)) return;
+      slots.push({spriteId: sp.id, variant: v});
     });
   });
   return slots;
@@ -175,19 +284,20 @@ function formatPct(n){
 }
 
 function openSpriteModal(sprite){
+  const s = season();
   const overlay = document.getElementById('spriteModalOverlay');
   const card = document.getElementById('spriteModalCard');
-  const vs = sprite.variants || VARIANTS;
-  const rates = DROP_RATES[sprite.id] || {};
-  const location = SPRITE_LOCATION[sprite.id];
+  const vs = sprite.variants || s.variants;
+  const rates = s.dropRates[sprite.id] || {};
+  const location = s.spriteLocation[sprite.id];
 
   const variantRows = vs.map(v => {
     const isUnreleased = !isReleased(sprite.id, v);
     const pct = isUnreleased ? 0 : rates[v];
     return `
       <div class="modal-variant-row${isUnreleased ? ' unreleased' : ''}">
-        <img class="modal-variant-thumb" src="assets/${sprite.id}-${v}.webp" onerror="this.style.visibility='hidden'">
-        <div class="modal-variant-name">${VARIANT_LABEL[v]}</div>
+        <img class="modal-variant-thumb" src="${s.assetPath}/${sprite.id}-${v}.webp" onerror="this.style.visibility='hidden'">
+        <div class="modal-variant-name">${s.variantLabels[v]}</div>
         <div class="modal-variant-pct">${isUnreleased ? 'Unreleased' : formatPct(pct)}</div>
       </div>
     `;
@@ -196,7 +306,7 @@ function openSpriteModal(sprite){
   card.innerHTML = `
     <button class="modal-close" id="modalCloseBtn">&times;</button>
     <div class="modal-head">
-      <img class="modal-icon" src="assets/${sprite.id}-normal.webp" alt="${sprite.name}" onerror="this.style.visibility='hidden'">
+      <img class="modal-icon" src="${s.assetPath}/${sprite.id}-normal.webp" alt="${sprite.name}" onerror="this.style.visibility='hidden'">
       <div>
         <div class="modal-title">${sprite.name}</div>
         <div class="rarity-tag ${sprite.rarity}" style="display:inline-block;margin-bottom:8px;">${RARITY_LABEL[sprite.rarity]}</div>
@@ -206,7 +316,7 @@ function openSpriteModal(sprite){
     </div>
     <div class="modal-variants-title">Variant Drop Chances</div>
     ${variantRows}
-    <div class="modal-note">Drop rates are approximate community-sourced figures and may shift with in-game hotfixes or seasonal events.</div>
+    <div class="modal-note">${s.ratesNote}</div>
   `;
 
   overlay.classList.add('open');
@@ -225,16 +335,17 @@ document.addEventListener('keydown', (e) => {
 });
 
 function spriteCollectedCount(sprite){
-  const vs = sprite.variants || VARIANTS;
+  const vs = sprite.variants || season().variants;
   return vs.filter(v => state[key(sprite.id,v)]).length;
 }
 
 function renderGrid(){
+  const s = season();
   const grid = document.getElementById('grid');
   grid.innerHTML = '';
 
-  SPRITES.forEach(sprite=>{
-    const vs = sprite.variants || VARIANTS;
+  s.sprites.forEach(sprite=>{
+    const vs = sprite.variants || s.variants;
     const matchesRarity = filter.rarity==='all' || sprite.rarity===filter.rarity;
     const matchesSearch = sprite.name.toLowerCase().includes(filter.search.toLowerCase());
 
@@ -246,13 +357,13 @@ function renderGrid(){
 
     const img = document.createElement('img');
     img.className = 'icon';
-    img.src = `assets/${sprite.id}-normal.webp`;
+    img.src = `${s.assetPath}/${sprite.id}-normal.webp`;
     img.alt = sprite.name;
     img.dataset.stage = '0';
     img.onerror = function(){
       if(this.dataset.stage === '0'){
         this.dataset.stage = '1';
-        this.src = `assets/${sprite.id}-normal.webp`;
+        this.src = `${s.assetPath}/${sprite.id}-normal.webp`;
       } else {
         this.style.opacity = '0.3';
       }
@@ -278,7 +389,7 @@ function renderGrid(){
 
     vs.forEach(v=>{
       const isCollected = !!state[key(sprite.id,v)];
-      if(filter.missingOnly && isCollected) return; 
+      if(filter.missingOnly && isCollected) return;
 
       const isUnreleased = !isReleased(sprite.id, v);
       if(isUnreleased && !filter.showUnreleased) return;
@@ -288,7 +399,7 @@ function renderGrid(){
       const isMastered = !!state[masterKey(sprite.id, v)];
 
       let isPremium = false;
-      if (sprite.id === 'dream') { 
+      if (sprite.id === 'dream') {
         isPremium = isCollected && isMastered;
       } else {
         isPremium = isCollected && currentLevel === '5' && isMastered;
@@ -301,8 +412,8 @@ function renderGrid(){
 
       chip.innerHTML = `
         ${premiumLabel}
-        <img class="chip-thumb" src="assets/${sprite.id}-${v}.webp" onerror="if(this.dataset.s!=='1'){this.dataset.s='1';this.src='assets/temp-${sprite.id}-cube.webp';}else{this.style.visibility='hidden';}">
-        <div>${VARIANT_LABEL[v]}</div>
+        <img class="chip-thumb" src="${s.assetPath}/${sprite.id}-${v}.webp" onerror="if(this.dataset.s!=='1'){this.dataset.s='1';this.src='${s.assetPath}/temp-${sprite.id}-cube.webp';}else{this.style.visibility='hidden';}">
+        <div>${s.variantLabels[v]}</div>
         ${badge}
         <div class="chip-controls" onclick="event.stopPropagation()">
           <label class="ctrl-row">
@@ -333,7 +444,7 @@ function renderGrid(){
           state[k] = true;
         }
         saveState();
-        renderGrid(); 
+        renderGrid();
         renderProgress();
       });
 
@@ -361,11 +472,12 @@ function renderGrid(){
 
 /* ================= RELEASE MANAGER ================= */
 function renderReleaseManager(){
+  const s = season();
   const grid = document.getElementById('releaseGrid');
   grid.innerHTML = '';
 
-  SPRITES.forEach(sprite => {
-    const vs = sprite.variants || VARIANTS;
+  s.sprites.forEach(sprite => {
+    const vs = sprite.variants || s.variants;
     const group = document.createElement('div');
     group.className = 'release-sprite-group';
 
@@ -383,7 +495,7 @@ function renderReleaseManager(){
       const chip = document.createElement('div');
       const released = isReleased(sprite.id, v);
       chip.className = 'release-variant-chip' + (released ? ' released' : '');
-      chip.textContent = VARIANT_LABEL[v];
+      chip.textContent = s.variantLabels[v];
       chip.dataset.sprite = sprite.id;
       chip.dataset.variant = v;
       chip.addEventListener('click', () => {
@@ -404,8 +516,9 @@ function renderReleaseManager(){
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       const spriteId = btn.dataset.sprite;
-      const sprite = SPRITES.find(s => s.id === spriteId);
-      const vs = sprite.variants || VARIANTS;
+      const curSeason = season();
+      const sprite = curSeason.sprites.find(sp => sp.id === spriteId);
+      const vs = sprite.variants || curSeason.variants;
       const allReleased = vs.every(v => isReleased(spriteId, v));
 
       vs.forEach(v => {
@@ -432,8 +545,8 @@ document.getElementById('closeReleasePanel').addEventListener('click', () => {
 });
 
 document.getElementById('toggleAllReleased').addEventListener('click', () => {
-  SPRITES.forEach(sprite => {
-    const vs = sprite.variants || VARIANTS;
+  season().sprites.forEach(sprite => {
+    const vs = sprite.variants || season().variants;
     vs.forEach(v => setReleased(sprite.id, v, true));
   });
   renderReleaseManager();
@@ -442,13 +555,58 @@ document.getElementById('toggleAllReleased').addEventListener('click', () => {
 });
 
 document.getElementById('toggleAllUnreleased').addEventListener('click', () => {
-  SPRITES.forEach(sprite => {
-    const vs = sprite.variants || VARIANTS;
+  season().sprites.forEach(sprite => {
+    const vs = sprite.variants || season().variants;
     vs.forEach(v => setReleased(sprite.id, v, false));
   });
   renderReleaseManager();
   renderGrid();
   renderProgress();
+});
+
+/* =========================================================
+   SEASON SWITCHING
+   ========================================================= */
+function renderHeader(){
+  const s = season();
+  document.getElementById('seasonSubtitle').textContent = s.subtitle;
+  document.getElementById('seasonUpdated').textContent = s.updated;
+  document.getElementById('tapeLabel').textContent = s.tempTag;
+  document.getElementById('footerTempTag').textContent = s.tempTag;
+  document.title = `Sprite Tracker — ${s.subtitle} Season`;
+  document.body.setAttribute('data-season', s.theme);
+
+  document.querySelectorAll('.season-tab').forEach(tab=>{
+    tab.classList.toggle('active', tab.dataset.season === currentSeasonId);
+  });
+}
+
+function switchSeason(id){
+  if(!SEASONS[id] || id === currentSeasonId) return;
+  currentSeasonId = id;
+  localStorage.setItem(ACTIVE_SEASON_KEY, id);
+  filter = {rarity:'all', search:'', missingOnly:false, showUnreleased:false};
+  document.getElementById('search').value = '';
+  document.querySelectorAll('.pill[data-rarity]').forEach(p=>p.classList.toggle('active', p.dataset.rarity==='all'));
+  document.getElementById('missingOnly').classList.remove('active');
+  document.getElementById('showUnreleased').classList.remove('active');
+
+  state = loadState();
+  releaseState = loadReleaseState();
+  seedSeasonDefaults();
+
+  renderHeader();
+  renderGrid();
+  renderProgress();
+
+  const panel = document.getElementById('releasePanel');
+  if (panel.style.display === 'block') {
+    renderReleaseManager();
+  }
+}
+
+document.querySelectorAll('.season-tab').forEach(tab=>{
+  tab.addEventListener('click', () => switchSeason(tab.dataset.season));
 });
 
 /* ================= FILTERS ================= */
@@ -476,7 +634,7 @@ document.getElementById('search').addEventListener('input', (e)=>{
   renderGrid();
 });
 document.getElementById('resetBtn').addEventListener('click', ()=>{
-  if(confirm('Reset all saved progress?')){
+  if(confirm(`Reset all saved progress for ${season().subtitle}?`)){
     state = {};
     saveState();
     renderGrid();
@@ -524,12 +682,13 @@ async function loadImageAsPNGDataURL(src){
 }
 
 async function preloadSpriteImages(){
+  const s = season();
   const cache = {};
   const tasks = [];
-  SPRITES.forEach(sprite => {
-    const vs = (sprite.variants || VARIANTS).filter(v => isReleased(sprite.id, v));
+  s.sprites.forEach(sprite => {
+    const vs = (sprite.variants || s.variants).filter(v => isReleased(sprite.id, v));
     vs.forEach(v => {
-      const path = `assets/${sprite.id}-${v}.webp`;
+      const path = `${s.assetPath}/${sprite.id}-${v}.webp`;
       tasks.push(
         loadImageAsPNGDataURL(path).then(data => { cache[`${sprite.id}:${v}`] = data; })
       );
@@ -540,6 +699,7 @@ async function preloadSpriteImages(){
 }
 
 async function generatePDFReport(){
+  const s = season();
   const btn = document.getElementById('pdfBtn');
   const originalLabel = btn.textContent;
   btn.textContent = 'Generating...';
@@ -564,9 +724,9 @@ async function generatePDFReport(){
     }
 
     // Only released sprites / variants get printed
-    const releasedSprites = SPRITES.filter(s => {
-      const vs = s.variants || VARIANTS;
-      return vs.some(v => isReleased(s.id, v));
+    const releasedSprites = s.sprites.filter(sp => {
+      const vs = sp.variants || s.variants;
+      return vs.some(v => isReleased(sp.id, v));
     });
 
     // Layout config — single centered column, one row per sprite
@@ -592,7 +752,7 @@ async function generatePDFReport(){
       let cursorY = startY;
 
       pageSprites.forEach(sprite => {
-        const vs = (sprite.variants || VARIANTS).filter(v => isReleased(sprite.id, v));
+        const vs = (sprite.variants || s.variants).filter(v => isReleased(sprite.id, v));
         const rowWidth = vs.length * cellW;
         const startX = (pageWidth - rowWidth) / 2 + (cellW - iconSize) / 2;
 
@@ -623,7 +783,7 @@ async function generatePDFReport(){
       });
     }
 
-    doc.save('extraction-manifesto-report.pdf');
+    doc.save(`extraction-manifesto-report-${s.id}.pdf`);
   }catch(err){
     alert('Erro ao gerar o PDF: ' + err.message);
   }finally{
@@ -634,6 +794,7 @@ async function generatePDFReport(){
 
 document.getElementById('exportBtn').addEventListener('click', ()=>{
   const exportData = {
+    season: season().id,
     state: state,
     releaseState: releaseState,
     exportedAt: new Date().toISOString()
@@ -642,7 +803,7 @@ document.getElementById('exportBtn').addEventListener('click', ()=>{
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'sprite-locker-backup.json';
+  a.download = `sprite-locker-backup-${season().id}.json`;
   a.click();
   URL.revokeObjectURL(url);
 });
@@ -677,5 +838,6 @@ document.getElementById('importBtn').addEventListener('click', ()=>{
   input.click();
 });
 
+renderHeader();
 renderGrid();
 renderProgress();

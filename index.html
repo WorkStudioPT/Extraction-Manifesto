@@ -3,19 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Extraction Manifesto — Runners Season</title>
+<title>Sprite Tracker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil:wght@700;800&family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="wrap">
+
+  <div class="season-tabs">
+    <div class="season-tab" data-season="s3">
+      <span class="season-tab-num">CH.7 · S3</span>
+      <span class="season-tab-name">Runners</span>
+    </div>
+    <div class="season-tab" data-season="s4">
+      <span class="season-tab-num">CH.7 · S4</span>
+      <span class="season-tab-name">Override</span>
+    </div>
+  </div>
+
   <div class="manifest-head">
-    <h1>Extraction Manifesto</h1>
+    <div class="tape-label" id="tapeLabel">CH.7 · TEMP.3</div>
+    <h1>Sprite Tracker</h1>
     <p class="sub">Track every sprite and variant extracted — data stays stored on this device.</p>
     <div class="manifest-meta">
-      <div>SEASON: <b>Runners</b></div>
-      <div>UPDATED: <b>25 JUN 2026</b></div>
+      <div>SEASON: <b id="seasonSubtitle">—</b></div>
+      <div>UPDATED: <b id="seasonUpdated">—</b></div>
       <div>ENTRIES: <b id="totalMeta">—</b></div>
     </div>
   </div>
@@ -69,7 +82,7 @@
       <button class="iconbtn" id="importBtn">Import JSON</button>
       <button class="iconbtn danger" id="resetBtn">Reset</button>
     </div>
-    <div class="footer-note">UNOFFICIAL TRACKER · CUSTOM MADE · CH.7 TEMP.3</div>
+    <div class="footer-note">UNOFFICIAL TRACKER · CUSTOM MADE · <span id="footerTempTag">CH.7 TEMP.3</span></div>
   </footer>
 </div>
 
