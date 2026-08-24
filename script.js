@@ -574,15 +574,17 @@ function renderHeader(){
   document.getElementById('tapeLabel').textContent = s.tempTag;
   document.getElementById('footerTempTag').textContent = s.tempTag;
   document.title = `Sprite Tracker — ${s.subtitle} Season`;
-  document.body.setAttribute('data-season', s.theme);
+  if (currentView === 'sprites') {
+    document.body.setAttribute('data-season', s.theme);
+  }
 
-  document.querySelectorAll('.season-tab').forEach(tab=>{
-    tab.classList.toggle('active', tab.dataset.season === currentSeasonId);
+  document.querySelectorAll('.season-tab[data-season]').forEach(tab=>{
+    tab.classList.toggle('active', currentView === 'sprites' && tab.dataset.season === currentSeasonId);
   });
 }
 
 function switchSeason(id){
-  if(!SEASONS[id] || id === currentSeasonId) return;
+  if(!SEASONS[id]) return;
   currentSeasonId = id;
   localStorage.setItem(ACTIVE_SEASON_KEY, id);
   filter = {rarity:'all', search:'', missingOnly:false, showUnreleased:false};
@@ -605,8 +607,40 @@ function switchSeason(id){
   }
 }
 
+/* =========================================================
+   TOP-LEVEL VIEW SWITCHING (XP Pace Tracker vs Sprites)
+   ========================================================= */
+const ACTIVE_VIEW_KEY = 'spriteLockerActiveView';
+let currentView = localStorage.getItem(ACTIVE_VIEW_KEY) || 'xp';
+
+function switchView(view, seasonId){
+  currentView = view;
+  localStorage.setItem(ACTIVE_VIEW_KEY, view);
+
+  document.getElementById('xpView').classList.toggle('active', view === 'xp');
+  document.getElementById('spritesView').classList.toggle('active', view === 'sprites');
+
+  document.querySelectorAll('.season-tab').forEach(tab=>{
+    const isActive = view === 'xp' ? tab.dataset.view === 'xp' : tab.dataset.season === seasonId;
+    tab.classList.toggle('active', isActive);
+  });
+
+  if (view === 'xp') {
+    // XP tracker always uses the Override (hacking) look, as requested.
+    document.body.setAttribute('data-season', 'override');
+  } else {
+    switchSeason(seasonId);
+  }
+}
+
 document.querySelectorAll('.season-tab').forEach(tab=>{
-  tab.addEventListener('click', () => switchSeason(tab.dataset.season));
+  tab.addEventListener('click', () => {
+    if (tab.dataset.view === 'xp') {
+      switchView('xp');
+    } else {
+      switchView('sprites', tab.dataset.season);
+    }
+  });
 });
 
 /* ================= FILTERS ================= */
@@ -643,27 +677,50 @@ document.getElementById('resetBtn').addEventListener('click', ()=>{
 });
 document.getElementById('pdfBtn').addEventListener('click', generatePDFReport);
 
-function imageToPNGDataURL(imgSrc){
+function imageToDataURL(imgSrc, opts, label){
+  const { maxDim = null, format = 'png', quality = 0.85 } = opts || {};
   return new Promise((resolve) => {
     const img = new Image();
     img.onload = () => {
       try{
+        let w = img.naturalWidth || 64;
+        let h = img.naturalHeight || 64;
+        if(maxDim && Math.max(w, h) > maxDim){
+          const scale = maxDim / Math.max(w, h);
+          w = Math.max(1, Math.round(w * scale));
+          h = Math.max(1, Math.round(h * scale));
+        }
         const canvas = document.createElement('canvas');
-        canvas.width = img.naturalWidth || 64;
-        canvas.height = img.naturalHeight || 64;
+        canvas.width = w;
+        canvas.height = h;
         const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        resolve(canvas.toDataURL('image/png'));
-      }catch(e){ resolve(null); }
+        if(format === 'jpeg'){
+          // JPEG has no alpha channel — flatten onto white first, otherwise
+          // transparent PNGs/SVGs turn solid black when exported as JPEG.
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, w, h);
+        }
+        ctx.drawImage(img, 0, 0, w, h);
+        const mime = format === 'jpeg' ? 'image/jpeg' : 'image/png';
+        resolve(canvas.toDataURL(mime, quality));
+      }catch(e){
+        console.warn('[PDF] failed to encode image', label || imgSrc, e);
+        resolve(null);
+      }
     };
-    img.onerror = () => resolve(null);
+    img.onerror = () => {
+      console.warn('[PDF] failed to load image', label || imgSrc);
+      resolve(null);
+    };
     img.src = imgSrc;
   });
 }
 
 // Tries fetch()+blob first (avoids canvas "tainted" errors some browsers throw
 // when converting file:// -loaded <img> elements), falls back to direct Image load.
-async function loadImageAsPNGDataURL(src){
+// opts: { maxDim, format: 'png'|'jpeg', quality } — used to downscale/compress
+// images before embedding them in the PDF, keeping report size manageable.
+async function loadImageAsDataURL(src, opts){
   try{
     const res = await fetch(src);
     if(res.ok){
@@ -674,11 +731,15 @@ async function loadImageAsPNGDataURL(src){
         reader.onerror = reject;
         reader.readAsDataURL(blob);
       });
-      const pngUrl = await imageToPNGDataURL(dataUrl);
-      if(pngUrl) return pngUrl;
+      const out = await imageToDataURL(dataUrl, opts, src);
+      if(out) return out;
+    } else {
+      console.warn('[PDF] asset not found (' + res.status + '):', src);
     }
-  }catch(e){ /* fall through to direct Image attempt */ }
-  return imageToPNGDataURL(src);
+  }catch(e){
+    console.warn('[PDF] fetch failed, falling back to direct load:', src, e);
+  }
+  return imageToDataURL(src, opts, src);
 }
 
 async function preloadSpriteImages(){
@@ -689,8 +750,11 @@ async function preloadSpriteImages(){
     const vs = (sprite.variants || s.variants).filter(v => isReleased(sprite.id, v));
     vs.forEach(v => {
       const path = `${s.assetPath}/${sprite.id}-${v}.webp`;
+      // Icons are drawn at 64pt in the PDF — 200px (~2x for print sharpness)
+      // is plenty; keeping the source's native resolution was the main
+      // reason past reports ballooned in size.
       tasks.push(
-        loadImageAsPNGDataURL(path).then(data => { cache[`${sprite.id}:${v}`] = data; })
+        loadImageAsDataURL(path, {maxDim: 200, format: 'png'}).then(data => { cache[`${sprite.id}:${v}`] = data; })
       );
     });
   });
@@ -708,18 +772,24 @@ async function generatePDFReport(){
   try{
     const [imageCache, bgImage, checkIcon] = await Promise.all([
       preloadSpriteImages(),
-      loadImageAsPNGDataURL('assets/back.png'),
-      loadImageAsPNGDataURL('assets/check-icon.svg')
+      // Background and check-icon now live alongside each season's sprites
+      // (assets/<season>/back.png, assets/<season>/check-icon.svg) so each
+      // season can ship its own report background.
+      // Background has no transparency, so JPEG at a decent quality — plus
+      // capping its resolution to what an A4 page actually needs at print
+      // DPI — is the other big win for file size vs. lossless full-res PNG.
+      loadImageAsDataURL(`${s.assetPath}/back.png`, {maxDim: 1800, format: 'jpeg', quality: 0.8}),
+      loadImageAsDataURL(`${s.assetPath}/check-icon.svg`, {maxDim: 64, format: 'png'})
     ]);
 
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({unit:'pt', format:'a4', orientation:'landscape'});
+    const doc = new jsPDF({unit:'pt', format:'a4', orientation:'landscape', compress:true});
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
 
     function drawBackground(){
       if(bgImage){
-        try{ doc.addImage(bgImage, 'PNG', 0, 0, pageWidth, pageHeight); }catch(e){}
+        try{ doc.addImage(bgImage, 'JPEG', 0, 0, pageWidth, pageHeight); }catch(e){}
       }
     }
 
@@ -838,6 +908,144 @@ document.getElementById('importBtn').addEventListener('click', ()=>{
   input.click();
 });
 
+/* =========================================================
+   XP PACE TRACKER
+   ========================================================= */
+const xpEl = {
+  nivelAtual: document.getElementById('nivelAtual'),
+  xpDentroNivel: document.getElementById('xpDentroNivel'),
+  nivelAlvo: document.getElementById('nivelAlvo'),
+  xpMedioNivel: document.getElementById('xpMedioNivel'),
+  dataInicio: document.getElementById('dataInicio'),
+  dataFim: document.getElementById('dataFim'),
+};
+
+document.querySelectorAll('.pill[data-xptab]').forEach(pill=>{
+  pill.addEventListener('click', ()=>{
+    document.querySelectorAll('.pill[data-xptab]').forEach(p=>p.classList.remove('active'));
+    pill.classList.add('active');
+    document.querySelectorAll('.xp-tab-content').forEach(c=>c.classList.remove('active'));
+    document.getElementById(pill.dataset.xptab).classList.add('active');
+  });
+});
+
+xpEl.dataInicio.addEventListener('click', function(){ try{ this.showPicker(); }catch(e){} });
+xpEl.dataFim.addEventListener('click', function(){ try{ this.showPicker(); }catch(e){} });
+
+function calcularXP(){
+  const nivelAtual = parseInt(xpEl.nivelAtual.value) || 0;
+  const xpDentro = parseInt(xpEl.xpDentroNivel.value) || 0;
+  const nivelAlvo = parseInt(xpEl.nivelAlvo.value) || 200;
+  const xpPorNivel = parseInt(xpEl.xpMedioNivel.value) || 80000;
+
+  const dataInicio = new Date(xpEl.dataInicio.value);
+  const dataFim = new Date(xpEl.dataFim.value);
+  const hoje = new Date();
+
+  const totalDiasEpoca = Math.max(1, Math.ceil((dataFim - dataInicio) / 86400000));
+  const diasPassados = Math.max(0, Math.ceil((hoje - dataInicio) / 86400000));
+  const diasRestantes = Math.max(1, Math.ceil((dataFim - hoje) / 86400000));
+  const pctEpoca = Math.min(100, Math.max(0, Math.round((diasPassados / totalDiasEpoca) * 100)));
+
+  document.getElementById('statDaysLeft').textContent = diasRestantes;
+  document.getElementById('statSeasonPct').textContent = pctEpoca + '%';
+  document.getElementById('xpDaysLeft').textContent = diasRestantes;
+  document.getElementById('xpSeasonPct').textContent = pctEpoca + '%';
+
+  const bpPct = Math.min(100, Math.max(0, (nivelAtual / 100) * 100));
+  document.getElementById('bpProgressBar').style.width = bpPct + '%';
+  document.getElementById('bpPctText').textContent = Math.round(bpPct) + '%';
+
+  const bonusPct = Math.min(100, Math.max(0, (nivelAtual / 200) * 100));
+  document.getElementById('bonusProgressBar').style.width = bonusPct + '%';
+  document.getElementById('bonusPctText').textContent = Math.round(bonusPct) + '%';
+
+  const xpTotalAtual = (nivelAtual * xpPorNivel) + xpDentro;
+  const xpTotalAlvo = nivelAlvo * xpPorNivel;
+  const xpEmFalta = Math.max(0, xpTotalAlvo - xpTotalAtual);
+  const xpPorDia = Math.round(xpEmFalta / diasRestantes);
+
+  document.getElementById('xpEmFaltaDisplay').textContent = xpEmFalta.toLocaleString('pt-PT');
+  document.getElementById('xpPorDiaDisplay').textContent = xpPorDia.toLocaleString('pt-PT') + ' XP/day';
+  document.getElementById('statXpDay').textContent = xpPorDia.toLocaleString('pt-PT');
+  document.getElementById('xpDayNeededMeta').textContent = xpPorDia.toLocaleString('pt-PT');
+
+  const nivelEsperado100 = Math.min(100, Math.round((100 / totalDiasEpoca) * diasPassados));
+  const nivelEsperado200 = Math.min(200, Math.round((200 / totalDiasEpoca) * diasPassados));
+  document.getElementById('statLevel100').textContent = nivelEsperado100;
+  document.getElementById('statLevel200').textContent = nivelEsperado200;
+
+  gerarTabelaPaceXP(dataInicio, totalDiasEpoca, xpPorNivel);
+}
+
+function gerarTabelaPaceXP(dataInicio, totalDias, xpPorNivel){
+  const tbody = document.getElementById('paceTableBody');
+  tbody.innerHTML = '';
+  for(let i = 0; i <= totalDias; i++){
+    const dataCorrente = new Date(dataInicio);
+    dataCorrente.setDate(dataCorrente.getDate() + i);
+
+    const nivel100Meta = Math.min(100, (100 / totalDias) * i);
+    const xp100Meta = Math.round(nivel100Meta * xpPorNivel);
+    const nivel200Meta = Math.min(200, (200 / totalDias) * i);
+    const xp200Meta = Math.round(nivel200Meta * xpPorNivel);
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${dataCorrente.toLocaleDateString('pt-PT')}</td>
+      <td>${i}</td>
+      <td>${nivel100Meta.toFixed(1)}</td>
+      <td>${xp100Meta.toLocaleString('pt-PT')}</td>
+      <td>${nivel200Meta.toFixed(1)}</td>
+      <td>${xp200Meta.toLocaleString('pt-PT')}</td>
+    `;
+    tbody.appendChild(tr);
+  }
+}
+
+function guardarXP(){
+  localStorage.setItem('xp_nivelAtual', xpEl.nivelAtual.value);
+  localStorage.setItem('xp_xpDentro', xpEl.xpDentroNivel.value);
+  localStorage.setItem('xp_nivelAlvo', xpEl.nivelAlvo.value);
+  localStorage.setItem('xp_xpMedio', xpEl.xpMedioNivel.value);
+  localStorage.setItem('xp_dataInicio', xpEl.dataInicio.value);
+  localStorage.setItem('xp_dataFim', xpEl.dataFim.value);
+  calcularXP();
+}
+
+function carregarXP(){
+  xpEl.nivelAtual.value = localStorage.getItem('xp_nivelAtual') || '0';
+  xpEl.xpDentroNivel.value = localStorage.getItem('xp_xpDentro') || '0';
+  xpEl.nivelAlvo.value = localStorage.getItem('xp_nivelAlvo') || '200';
+  xpEl.xpMedioNivel.value = localStorage.getItem('xp_xpMedio') || '80000';
+  xpEl.dataInicio.value = localStorage.getItem('xp_dataInicio') || '2026-08-20';
+  xpEl.dataFim.value = localStorage.getItem('xp_dataFim') || '2026-10-31';
+  calcularXP();
+}
+
+document.getElementById('btnGuardar').addEventListener('click', guardarXP);
+document.getElementById('btnGuardarEpoca').addEventListener('click', guardarXP);
+document.getElementById('btnReset').addEventListener('click', ()=>{
+  if(confirm('Reset all saved XP tracker progress?')){
+    ['xp_nivelAtual','xp_xpDentro','xp_nivelAlvo','xp_xpMedio','xp_dataInicio','xp_dataFim'].forEach(k=>localStorage.removeItem(k));
+    carregarXP();
+  }
+});
+[xpEl.nivelAtual, xpEl.xpDentroNivel, xpEl.nivelAlvo, xpEl.xpMedioNivel, xpEl.dataInicio, xpEl.dataFim].forEach(el=>{
+  el.addEventListener('input', calcularXP);
+});
+
+carregarXP();
+
+/* =========================================================
+   INITIAL RENDER
+   ========================================================= */
 renderHeader();
 renderGrid();
 renderProgress();
+
+if (currentView === 'sprites') {
+  switchView('sprites', SEASONS[currentSeasonId] ? currentSeasonId : 's4');
+} else {
+  switchView('xp');
+}

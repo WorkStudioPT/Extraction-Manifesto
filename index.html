@@ -12,78 +12,228 @@
 <div class="wrap">
 
   <div class="season-tabs">
-    <div class="season-tab" data-season="s3">
+    <div class="season-tab active" data-view="xp">
+      <span class="season-tab-num">XP TRACKER</span>
+      <span class="season-tab-name">XP Pace</span>
+    </div>
+    <div class="season-tab" data-view="s3" data-season="s3">
       <span class="season-tab-num">CH.7 · S3</span>
       <span class="season-tab-name">Runners</span>
     </div>
-    <div class="season-tab" data-season="s4">
+    <div class="season-tab" data-view="s4" data-season="s4">
       <span class="season-tab-num">CH.7 · S4</span>
       <span class="season-tab-name">Override</span>
     </div>
   </div>
 
-  <div class="manifest-head">
-    <div class="tape-label" id="tapeLabel">CH.7 · TEMP.3</div>
-    <h1>Sprite Tracker</h1>
-    <p class="sub">Track every sprite and variant extracted — data stays stored on this device.</p>
-    <div class="manifest-meta">
-      <div>SEASON: <b id="seasonSubtitle">—</b></div>
-      <div>UPDATED: <b id="seasonUpdated">—</b></div>
-      <div>ENTRIES: <b id="totalMeta">—</b></div>
-    </div>
-  </div>
-
-  <div class="track-card">
-    <div class="track-top">
-      <div class="track-counters">
-        <div class="track-count" id="countText">0<span> / 0 Extracted</span></div>
-        <div class="track-count mastered-count-color" id="masteredCountText">0<span> / 0 Mastered</span></div>
+  <!-- ===================== XP PACE TRACKER VIEW ===================== -->
+  <div id="xpView">
+    <div class="manifest-head">
+      <div class="tape-label">XP · TRACKER</div>
+      <h1>XP Pace Tracker</h1>
+      <p class="sub">Track your Battle Pass pace and daily XP needed — data stays stored on this device.</p>
+      <div class="manifest-meta">
+        <div>DAYS LEFT: <b id="xpDaysLeft">—</b></div>
+        <div>SEASON: <b id="xpSeasonPct">—</b></div>
+        <div>XP/DAY NEEDED: <b id="xpDayNeededMeta">—</b></div>
       </div>
-      <div class="track-pct" id="pctText">0%</div>
     </div>
-    <div class="track">
-      <div class="track-fill" id="trackFill"></div>
+
+    <div class="xp-stats-grid">
+      <div class="stat-card">
+        <div class="stat-title">Days Remaining</div>
+        <div class="stat-value" id="statDaysLeft">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Season Complete</div>
+        <div class="stat-value" id="statSeasonPct">0%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Expected Level — 100</div>
+        <div class="stat-value" id="statLevel100">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Expected Level — 200</div>
+        <div class="stat-value stat-highlight" id="statLevel200">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">XP/Day Required</div>
+        <div class="stat-value stat-highlight" id="statXpDay">0</div>
+      </div>
     </div>
+
+    <div class="controls xp-subtabs">
+      <div class="pill active" data-xptab="dailySummary">Daily Summary</div>
+      <div class="pill" data-xptab="levelingPace">Leveling Pace</div>
+    </div>
+
+    <div id="dailySummary" class="xp-tab-content active">
+      <div class="track-card">
+        <div class="track-top">
+          <div class="track-counters">
+            <div class="track-count">BATTLE PASS <span>LEVEL 0-100</span></div>
+          </div>
+          <div class="track-pct" id="bpPctText">0%</div>
+        </div>
+        <div class="track"><div class="track-fill" id="bpProgressBar"></div></div>
+      </div>
+
+      <div class="track-card">
+        <div class="track-top">
+          <div class="track-counters">
+            <div class="track-count">BONUS REWARDS <span>LEVEL 0-200</span></div>
+          </div>
+          <div class="track-pct" id="bonusPctText">0%</div>
+        </div>
+        <div class="track"><div class="track-fill" id="bonusProgressBar"></div></div>
+      </div>
+    </div>
+
+    <div id="levelingPace" class="xp-tab-content">
+      <div class="track-card xp-table-card">
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Day #</th>
+                <th>Target (Lvl 100)</th>
+                <th>Accum. XP (100)</th>
+                <th>Target (Lvl 200)</th>
+                <th>Accum. XP (200)</th>
+              </tr>
+            </thead>
+            <tbody id="paceTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="track-card">
+      <h3 class="xp-card-title">Pace Calculator</h3>
+      <div class="xp-input-grid">
+        <div class="xp-input-group">
+          <label>Current Level</label>
+          <input type="number" id="nivelAtual" value="0">
+        </div>
+        <div class="xp-input-group">
+          <label>XP Within Level</label>
+          <input type="number" id="xpDentroNivel" value="0">
+        </div>
+        <div class="xp-input-group">
+          <label>Target Level</label>
+          <input type="number" id="nivelAlvo" value="200">
+        </div>
+        <div class="xp-input-group">
+          <label>Avg XP / Level</label>
+          <input type="number" id="xpMedioNivel" value="80000">
+        </div>
+      </div>
+
+      <div class="xp-results-box">
+        <div>
+          <div class="xp-results-label">XP Missing</div>
+          <div class="xp-results-value" id="xpEmFaltaDisplay">0</div>
+        </div>
+        <div>
+          <div class="xp-results-label">Needed Per Day</div>
+          <div class="xp-results-value" id="xpPorDiaDisplay">0 XP/day</div>
+        </div>
+      </div>
+
+      <div class="footer-actions xp-btn-row">
+        <button class="iconbtn" id="btnGuardar">Save Progress</button>
+        <button class="iconbtn danger" id="btnReset">Reset</button>
+      </div>
+    </div>
+
+    <div class="track-card">
+      <h3 class="xp-card-title">Season Settings</h3>
+      <div class="xp-input-grid">
+        <div class="xp-input-group">
+          <label>Season Start</label>
+          <input type="date" id="dataInicio">
+        </div>
+        <div class="xp-input-group">
+          <label>Season End</label>
+          <input type="date" id="dataFim">
+        </div>
+      </div>
+      <div class="footer-actions xp-btn-row">
+        <button class="iconbtn" id="btnGuardarEpoca">Save Season</button>
+      </div>
+    </div>
+
+    <footer>
+      <div class="footer-note">UNOFFICIAL TRACKER · CUSTOM MADE · XP PACE</div>
+    </footer>
   </div>
 
-  <div class="controls">
-    <input type="text" id="search" placeholder="Search sprite...">
-    <div class="pill active" data-rarity="all">All</div>
-    <div class="pill" data-rarity="rare">Rare</div>
-    <div class="pill" data-rarity="epic">Epic</div>
-    <div class="pill" data-rarity="legendary">Legendary</div>
-    <div class="pill" data-rarity="mythic">Mythic</div>
-    <div class="pill" id="missingOnly">Missing Only</div>
-    <div class="pill" id="showUnreleased">Show Unreleased</div>
-  </div>
-
-  <div class="grid" id="grid"></div>
-
-  <div class="modal-overlay" id="spriteModalOverlay">
-    <div class="modal-card" id="spriteModalCard"></div>
-  </div>
-
-  <!-- Release Manager Panel -->
-  <div class="release-panel" id="releasePanel" style="display:none;">
-    <h3>Release Manager — Mark which Sprites & Variants have been released</h3>
-    <div style="margin-bottom:12px;">
-      <button class="release-toggle-btn" id="toggleAllReleased">Mark All as Released</button>
-      <button class="release-toggle-btn" id="toggleAllUnreleased">Unmark All (Unreleased)</button>
-      <button class="release-toggle-btn" id="closeReleasePanel">Close Panel</button>
+  <!-- ===================== SPRITES VIEW ===================== -->
+  <div id="spritesView">
+    <div class="manifest-head">
+      <div class="tape-label" id="tapeLabel">CH.7 · TEMP.3</div>
+      <h1>Sprite Tracker</h1>
+      <p class="sub">Track every sprite and variant extracted — data stays stored on this device.</p>
+      <div class="manifest-meta">
+        <div>SEASON: <b id="seasonSubtitle">—</b></div>
+        <div>UPDATED: <b id="seasonUpdated">—</b></div>
+        <div>ENTRIES: <b id="totalMeta">—</b></div>
+      </div>
     </div>
-    <div class="release-grid" id="releaseGrid"></div>
-  </div>
 
-  <footer>
-    <div class="footer-actions">
-      <button class="iconbtn" id="releaseManagerBtn">Release Manager</button>
-      <button class="iconbtn" id="pdfBtn">PDF Report</button>
-      <button class="iconbtn" id="exportBtn">Export JSON</button>
-      <button class="iconbtn" id="importBtn">Import JSON</button>
-      <button class="iconbtn danger" id="resetBtn">Reset</button>
+    <div class="track-card">
+      <div class="track-top">
+        <div class="track-counters">
+          <div class="track-count" id="countText">0<span> / 0 Extracted</span></div>
+          <div class="track-count mastered-count-color" id="masteredCountText">0<span> / 0 Mastered</span></div>
+        </div>
+        <div class="track-pct" id="pctText">0%</div>
+      </div>
+      <div class="track">
+        <div class="track-fill" id="trackFill"></div>
+      </div>
     </div>
-    <div class="footer-note">UNOFFICIAL TRACKER · CUSTOM MADE · <span id="footerTempTag">CH.7 TEMP.3</span></div>
-  </footer>
+
+    <div class="controls">
+      <input type="text" id="search" placeholder="Search sprite...">
+      <div class="pill active" data-rarity="all">All</div>
+      <div class="pill" data-rarity="rare">Rare</div>
+      <div class="pill" data-rarity="epic">Epic</div>
+      <div class="pill" data-rarity="legendary">Legendary</div>
+      <div class="pill" data-rarity="mythic">Mythic</div>
+      <div class="pill" id="missingOnly">Missing Only</div>
+      <div class="pill" id="showUnreleased">Show Unreleased</div>
+    </div>
+
+    <div class="grid" id="grid"></div>
+
+    <div class="modal-overlay" id="spriteModalOverlay">
+      <div class="modal-card" id="spriteModalCard"></div>
+    </div>
+
+    <!-- Release Manager Panel -->
+    <div class="release-panel" id="releasePanel" style="display:none;">
+      <h3>Release Manager — Mark which Sprites & Variants have been released</h3>
+      <div style="margin-bottom:12px;">
+        <button class="release-toggle-btn" id="toggleAllReleased">Mark All as Released</button>
+        <button class="release-toggle-btn" id="toggleAllUnreleased">Unmark All (Unreleased)</button>
+        <button class="release-toggle-btn" id="closeReleasePanel">Close Panel</button>
+      </div>
+      <div class="release-grid" id="releaseGrid"></div>
+    </div>
+
+    <footer>
+      <div class="footer-actions">
+        <button class="iconbtn" id="releaseManagerBtn">Release Manager</button>
+        <button class="iconbtn" id="pdfBtn">PDF Report</button>
+        <button class="iconbtn" id="exportBtn">Export JSON</button>
+        <button class="iconbtn" id="importBtn">Import JSON</button>
+        <button class="iconbtn danger" id="resetBtn">Reset</button>
+      </div>
+      <div class="footer-note">UNOFFICIAL TRACKER · CUSTOM MADE · <span id="footerTempTag">CH.7 TEMP.3</span></div>
+    </footer>
+  </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
