@@ -114,17 +114,17 @@ const DROP_RATES_S4 = {};
 const SPRITE_LOCATION_S4 = {};
 
 const SPRITES_S4 = [
-  {id:'klombo',     name:'Klombo',       rarity:'epic',      ability:'Grants a random item at each level.', variants:['normal','gold','cheatmaster']},
+  {id:'killswitch', name:'Killswitch',   rarity:'epic',      ability:'Improves accuracy while in Hangtime.', variants:['normal','gold','cheatmaster']},
   {id:'sonic',      name:'Sonic',        rarity:'legendary', ability:'Gotta go fast — noticeably increases sprint speed.', variants:['normal','gold','cheatmaster']},
-  {id:'tails',      name:'Tails',        rarity:'legendary', ability:'Lets you hover briefly in the air.', variants:['normal','gold','cheatmaster']},
-  {id:'shadow',     name:'Shadow',       rarity:'epic',      ability:'Automatically reloads weapons over time, even unequipped.', variants:['normal','gold','cheatmaster']},
+  {id:'adventure',  name:'Adventure',    rarity:'epic',      ability:'Upgrades a random item in your inventory at each level.', variants:['normal','gold','cheatmaster']},
   {id:'jackrabbit', name:'Jackrabbit',   rarity:'rare',      ability:'Grants an extra jump while mid-air.', variants:['normal','gold','cheatmaster']},
   {id:'8bit',       name:'8-Bit',        rarity:'epic',      ability:'Guarantees an 8-Bit Shotgun in your first chest, with a damage boost.', variants:['normal','gold','cheatmaster']},
-  {id:'crown',      name:'Crown',        rarity:'mythic',    ability:'Grants bonus Crown Wins after a Victory Royale. Only levels up by winning matches.', variants:['normal','gold','cheatmaster']},
-  {id:'adventure',  name:'Adventure',    rarity:'epic',      ability:'Upgrades a random item in your inventory at each level.', variants:['normal','gold','cheatmaster']},
-  {id:'bush',       name:'Bush',         rarity:'rare',      ability:'Spawns a Bush disguise after a duration; at max level, grants one on elimination.', variants:['normal','gold','cheatmaster']},
+  {id:'shadow',     name:'Shadow',       rarity:'epic',      ability:'Automatically reloads weapons over time, even unequipped.', variants:['normal','gold','cheatmaster']},
+  {id:'tails',      name:'Tails',        rarity:'legendary', ability:'Lets you hover briefly in the air.', variants:['normal','gold','cheatmaster']},
   {id:'jonesy',     name:'Jonesy',       rarity:'rare',      ability:'Recovers some health or shield a short while after taking damage.', variants:['normal','gold','cheatmaster']},
-  {id:'killswitch', name:'Killswitch',   rarity:'epic',      ability:'Improves accuracy while in Hangtime.', variants:['normal','gold','cheatmaster']},
+  {id:'crown',      name:'Crown',        rarity:'mythic',    ability:'Grants bonus Crown Wins after a Victory Royale. Only levels up by winning matches.', variants:['normal','gold','cheatmaster']},
+  {id:'klombo',     name:'Klombo',       rarity:'epic',      ability:'Grants a random item at each level.', variants:['normal','gold','cheatmaster']},
+  {id:'bush',       name:'Bush',         rarity:'rare',      ability:'Spawns a Bush disguise after a duration; at max level, grants one on elimination.', variants:['normal','gold','cheatmaster']},
   {id:'stormscout', name:'Storm Scout',  rarity:'legendary', ability:'Triggers Overdrive after taking enough storm damage; reveals future storm circles at max level.', variants:['normal','gold','cheatmaster']},
 ];
 
