@@ -118,9 +118,9 @@ const SPRITES_S4 = [
   {id:'sonic',      name:'Sonic',        rarity:'legendary', ability:'Gotta go fast — noticeably increases sprint speed.', variants:['normal','gold','cheatmaster']},
   {id:'adventure',  name:'Adventure',    rarity:'epic',      ability:'Upgrades a random item in your inventory at each level.', variants:['normal','gold','cheatmaster']},
   {id:'jackrabbit', name:'Jackrabbit',   rarity:'rare',      ability:'Grants an extra jump while mid-air.', variants:['normal','gold','cheatmaster']},
+  {id:'tails',      name:'Tails',        rarity:'legendary', ability:'Lets you hover briefly in the air.', variants:['normal','gold','cheatmaster']},
   {id:'8bit',       name:'8-Bit',        rarity:'epic',      ability:'Guarantees an 8-Bit Shotgun in your first chest, with a damage boost.', variants:['normal','gold','cheatmaster']},
   {id:'shadow',     name:'Shadow',       rarity:'epic',      ability:'Automatically reloads weapons over time, even unequipped.', variants:['normal','gold','cheatmaster']},
-  {id:'tails',      name:'Tails',        rarity:'legendary', ability:'Lets you hover briefly in the air.', variants:['normal','gold','cheatmaster']},
   {id:'jonesy',     name:'Jonesy',       rarity:'rare',      ability:'Recovers some health or shield a short while after taking damage.', variants:['normal','gold','cheatmaster']},
   {id:'crown',      name:'Crown',        rarity:'mythic',    ability:'Grants bonus Crown Wins after a Victory Royale. Only levels up by winning matches.', variants:['normal','gold','cheatmaster']},
   {id:'klombo',     name:'Klombo',       rarity:'epic',      ability:'Grants a random item at each level.', variants:['normal','gold','cheatmaster']},
@@ -981,22 +981,22 @@ function calcularXP(){
 function gerarTabelaPaceXP(dataInicio, totalDias, xpPorNivel){
   const tbody = document.getElementById('paceTableBody');
   tbody.innerHTML = '';
-  for(let i = 0; i <= totalDias; i++){
+  for(let i = 1; i <= totalDias; i++){
     const dataCorrente = new Date(dataInicio);
-    dataCorrente.setDate(dataCorrente.getDate() + i);
+    dataCorrente.setDate(dataCorrente.getDate() + (i - 1));
 
-    const nivel100Meta = Math.min(100, (100 / totalDias) * i);
+    const nivel100Meta = Math.min(100, Math.round((100 / totalDias) * i));
     const xp100Meta = Math.round(nivel100Meta * xpPorNivel);
-    const nivel200Meta = Math.min(200, (200 / totalDias) * i);
+    const nivel200Meta = Math.min(200, Math.round((200 / totalDias) * i));
     const xp200Meta = Math.round(nivel200Meta * xpPorNivel);
 
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${dataCorrente.toLocaleDateString('pt-PT')}</td>
       <td>${i}</td>
-      <td>${nivel100Meta.toFixed(1)}</td>
+      <td>${nivel100Meta}</td>
       <td>${xp100Meta.toLocaleString('pt-PT')}</td>
-      <td>${nivel200Meta.toFixed(1)}</td>
+      <td>${nivel200Meta}</td>
       <td>${xp200Meta.toLocaleString('pt-PT')}</td>
     `;
     tbody.appendChild(tr);
