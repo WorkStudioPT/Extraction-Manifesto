@@ -384,6 +384,19 @@ input[type=text]:focus{outline:none;border-color:var(--stamp);}
   transform: translate(-50%, -50%);
 }
 
+/* INDIVIDUAL VIEW (ungrouped variant cards) */
+.grid.individual-view{
+  grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+}
+.chip.solo-card{
+  padding:10px 10px 12px;
+  font-size:11px;
+}
+.solo-top{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin-bottom:2px;}
+.solo-name{font-family:'Big Shoulders Stencil';font-weight:800;font-size:14px;text-transform:uppercase;letter-spacing:.02em;line-height:1.15;text-align:left;}
+.solo-variant{font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;opacity:.75;text-align:left;margin-bottom:6px;}
+.chip.solo-card .chip-thumb{height:120px;}
+
 footer{
   margin-top:40px;
   padding-top:24px;

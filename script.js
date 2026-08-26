@@ -178,7 +178,7 @@ function season(){ return SEASONS[currentSeasonId]; }
 
 let state = loadState();
 let releaseState = loadReleaseState();
-let filter = {rarity:'all', search:'', missingOnly:false, showUnreleased:false};
+let filter = {rarity:'all', search:'', missingOnly:false, showUnreleased:false, viewMode:'grouped'};
 
 function loadState(){
   try{
@@ -340,8 +340,16 @@ function spriteCollectedCount(sprite){
 }
 
 function renderGrid(){
-  const s = season();
   const grid = document.getElementById('grid');
+
+  if(filter.viewMode === 'individual'){
+    grid.classList.add('individual-view');
+    renderGridIndividual();
+    return;
+  }
+  grid.classList.remove('individual-view');
+
+  const s = season();
   grid.innerHTML = '';
 
   s.sprites.forEach(sprite=>{
@@ -470,6 +478,100 @@ function renderGrid(){
   });
 }
 
+function renderGridIndividual(){
+  const s = season();
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+
+  s.sprites.forEach(sprite=>{
+    const vs = sprite.variants || s.variants;
+    const matchesRarity = filter.rarity==='all' || sprite.rarity===filter.rarity;
+    const matchesSearch = sprite.name.toLowerCase().includes(filter.search.toLowerCase());
+    if(!matchesRarity || !matchesSearch) return;
+
+    vs.forEach(v=>{
+      const isCollected = !!state[key(sprite.id,v)];
+      if(filter.missingOnly && isCollected) return;
+
+      const isUnreleased = !isReleased(sprite.id, v);
+      if(isUnreleased && !filter.showUnreleased) return;
+
+      const currentLevel = state[levelKey(sprite.id, v)] || '1';
+      const isMastered = !!state[masterKey(sprite.id, v)];
+
+      let isPremium = false;
+      if (sprite.id === 'dream') {
+        isPremium = isCollected && isMastered;
+      } else {
+        isPremium = isCollected && currentLevel === '5' && isMastered;
+      }
+
+      const chip = document.createElement('div');
+      chip.className = 'chip solo-card' + (isCollected ? ' on' : '') + (isUnreleased ? ' unreleased' : '') + (isPremium ? ' premium-complete' : '');
+
+      const badge = isUnreleased ? '<span class="chip-badge">Soon</span>' : '';
+      const premiumLabel = isPremium ? '<span class="premium-badge">Done</span>' : '';
+
+      chip.innerHTML = `
+        ${premiumLabel}
+        <div class="solo-top">
+          <div class="solo-name">${sprite.name}</div>
+          <div class="rarity-tag ${sprite.rarity}">${RARITY_LABEL[sprite.rarity]}</div>
+        </div>
+        <div class="solo-variant">${s.variantLabels[v]}</div>
+        <img class="chip-thumb solo-thumb" src="${s.assetPath}/${sprite.id}-${v}.webp" onerror="if(this.dataset.s!=='1'){this.dataset.s='1';this.src='${s.assetPath}/temp-${sprite.id}-cube.webp';}else{this.style.visibility='hidden';}">
+        ${badge}
+        <div class="chip-controls" onclick="event.stopPropagation()">
+          <label class="ctrl-row">
+            <span class="ctrl-label">LVL</span>
+            <select class="v-lvl" data-sprite="${sprite.id}" data-var="${v}">
+              ${[1,2,3,4,5].map(l => `<option value="${l}" ${currentLevel == l ? 'selected' : ''}>${l}</option>`).join('')}
+            </select>
+          </label>
+          <label class="ctrl-row">
+            <span class="ctrl-label">Mastered</span>
+            <input type="checkbox" class="v-mast" data-sprite="${sprite.id}" data-var="${v}" ${isMastered ? 'checked' : ''}>
+          </label>
+        </div>
+      `;
+
+      chip.addEventListener('click', () => {
+        const k = key(sprite.id,v);
+        state[k] = !state[k];
+        saveState();
+        renderGrid();
+        renderProgress();
+      });
+
+      chip.querySelector('.v-lvl').addEventListener('change', (e) => {
+        state[levelKey(sprite.id, v)] = e.target.value;
+        const k = key(sprite.id, v);
+        if (!state[k]) {
+          state[k] = true;
+        }
+        saveState();
+        renderGrid();
+        renderProgress();
+      });
+
+      chip.querySelector('.v-mast').addEventListener('change', (e) => {
+        state[masterKey(sprite.id, v)] = e.target.checked;
+        if (e.target.checked) {
+          const k = key(sprite.id, v);
+          if (!state[k]) {
+            state[k] = true;
+          }
+        }
+        saveState();
+        renderGrid();
+        renderProgress();
+      });
+
+      grid.appendChild(chip);
+    });
+  });
+}
+
 /* ================= RELEASE MANAGER ================= */
 function renderReleaseManager(){
   const s = season();
@@ -587,11 +689,13 @@ function switchSeason(id){
   if(!SEASONS[id]) return;
   currentSeasonId = id;
   localStorage.setItem(ACTIVE_SEASON_KEY, id);
-  filter = {rarity:'all', search:'', missingOnly:false, showUnreleased:false};
+  filter = {rarity:'all', search:'', missingOnly:false, showUnreleased:false, viewMode:'grouped'};
   document.getElementById('search').value = '';
   document.querySelectorAll('.pill[data-rarity]').forEach(p=>p.classList.toggle('active', p.dataset.rarity==='all'));
   document.getElementById('missingOnly').classList.remove('active');
   document.getElementById('showUnreleased').classList.remove('active');
+  document.getElementById('individualView').classList.remove('active');
+  document.getElementById('grid').classList.remove('individual-view');
 
   state = loadState();
   releaseState = loadReleaseState();
@@ -662,6 +766,11 @@ document.getElementById('showUnreleased').addEventListener('click', function(){
   this.classList.toggle('active', filter.showUnreleased);
   renderGrid();
   renderProgress();
+});
+document.getElementById('individualView').addEventListener('click', function(){
+  filter.viewMode = filter.viewMode === 'individual' ? 'grouped' : 'individual';
+  this.classList.toggle('active', filter.viewMode === 'individual');
+  renderGrid();
 });
 document.getElementById('search').addEventListener('input', (e)=>{
   filter.search = e.target.value;
