@@ -159,7 +159,7 @@ const SEASONS = {
     label: 'Chapter 7',
     subtitle: 'Override',
     tempTag: 'CH.7 · TEMP.4',
-    updated: '20 AUG 2026',
+    updated: '03 SET 2026',
     storageKey: 'spriteLockerCollectionV3_s4',
     releaseKey: 'spriteLockerReleaseV4_s4',
     assetPath: 'assets/override',
