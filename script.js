@@ -129,8 +129,8 @@ const SPRITES_S4 = [
   {id:'megaman',    name:'Mega Man',     rarity:'rare',      ability:'Slip and slide around with reduced friction while Sliding. Slide farther with each Level Up!', variants:['normal']},
   {id:'overshield', name:'Overshield',   rarity:'rare',      ability:'Grants overshield, scaling with level.', variants:['normal','gold','cheatmaster','loothacker']},
   {id:'xray',       name:'X-Ray',        rarity:'legendary', ability:'Periodically mark enemies in an area around you. Mark more often and in a larger radius with each Level Up!', variants:['normal','gold','cheatmaster','loothacker']},
-  {id:'onigiri',    name:'onigiri',      rarity:'rare',      ability:'Applies Overdrive after eating or drinking a Consumable. Overdrive lasts longer with each Level Up!', variants:['normal','gold','cheatmaster','loothacker']},
-
+  {id:'onigiri',    name:'Onigiri',      rarity:'rare',      ability:'Applies Overdrive after eating or drinking a Consumable. Overdrive lasts longer with each Level Up!', variants:['normal','gold','cheatmaster','loothacker']},
+  {id:'stormscout', name:'Storm Scout',  rarity:'rare',      ability:'Applies Overdrive after taking a certain amount of storm damage. Increases Overdrive duration with each Level Up!', variants:['normal','gold','cheatmaster','loothacker']},
 ];
 
 /* =========================================================
