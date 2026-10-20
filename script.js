@@ -142,20 +142,18 @@ const SPRITES_S4 = [
   {id:'klombo',         name:'Klombo',          rarity:'epic',      ability:'Grants a random item at each level.', variants:V_S4_QUACK},
   {id:'megaman',        name:'Mega Man',        rarity:'rare',      ability:'Slip and slide around with reduced friction while Sliding. Slide farther with each Level Up!', variants:['normal']},
   {id:'overshield',     name:'Overshield',      rarity:'rare',      ability:'Grants overshield, scaling with level.', variants:V_S4_STD},
+  {id:'pond',           name:'Pond',            rarity:'epic',      ability:'Jump shortly after landing to trigger a Super Jump, if charges are present. Super jump strength increases and cooldown decreases with each Level Up!', variants:V_S4_STD},
   {id:'xray',           name:'X-Ray',           rarity:'legendary', ability:'Periodically mark enemies in an area around you. Mark more often and in a larger radius with each Level Up!', variants:V_S4_STD},
   {id:'onigiri',        name:'Onigiri',         rarity:'rare',      ability:'Applies Overdrive after eating or drinking a Consumable. Overdrive lasts longer with each Level Up!', variants:V_S4_STD},
   {id:'stormscout',     name:'Storm Scout',     rarity:'rare',      ability:'Applies Overdrive after taking a certain amount of storm damage. Increases Overdrive duration with each Level Up!', variants:V_S4_STD},
   {id:'blinky',         name:'Blinky',          rarity:'legendary', ability:'Taking damage cloaks you for a short time, making you harder to spot.', variants:V_S4_STD},
+  {id:'dumpsterdive',   name:'Dumpster Dive',   rarity:'epic',      ability:'Find food when jumping out of hiding props (small chance from containers) that heals extra. Food improves with each Level Up!', variants:V_S4_STD},
   {id:'birthday',       name:'Birthday',        rarity:'rare',      ability:'Chests have a chance to serve up slices of cake when opened. At max Sprite Level, eliminations can too.', variants:V_S4_STD},
   {id:'crashbandicoot', name:'Crash Bandicoot', rarity:'legendary', ability:'Perform a spin attack while midair, damaging and knocking back nearby opponents.', variants:V_S4_STD},
-  {id:'pond',           name:'Pond',            rarity:'epic',      ability:'Jump shortly after landing to trigger a Super Jump, if charges are present. Super jump strength increases and cooldown decreases with each Level Up!', variants:V_S4_STD},
   {id:'morgana',        name:'Morgana',         rarity:'epic',      ability:'Increases the effectiveness of healing items. Healing effectiveness increases with each Level Up!', variants:V_S4_STD},
-  // ---- Fortnitemares (from 1 OCT 2026) ----
   {id:'spookydash',     name:'Spooky Dash',     rarity:'mythic',    ability:'Jump in the air to phase through some objects. Charges regenerate over time and the cooldown drops with each Level Up!', variants:V_S4_QUACK},
-  {id:'vampire',        name:'Vampire',         rarity:'legendary', ability:'Recover health when you damage an enemy. Percentage recovered increases with each Level Up!', variants:V_S4_STD},
   {id:'deer',           name:'The Deer',        rarity:'legendary', ability:'Melee attacks deal more damage. Bonus increases with each Level Up!', variants:V_S4_STD},
-  {id:'dumpsterdive',   name:'Dumpster Dive',   rarity:'epic',      ability:'Find food when jumping out of hiding props (small chance from containers) that heals extra. Food improves with each Level Up!', variants:V_S4_STD},
-  // ---- Fortnitemares second drop (15 OCT 2026) ----
+  {id:'vampire',        name:'Vampire',         rarity:'legendary', ability:'Recover health when you damage an enemy. Percentage recovered increases with each Level Up!', variants:V_S4_STD},
   {id:'honey',          name:'Honey',           rarity:'epic',      ability:'Sends bees after enemies who damage you.', variants:V_S4_STD},
   {id:'onewishwillow',  name:'One Wish Willow', rarity:'mythic',    ability:'Instantly extracts an eliminated opponent\'s Sprites and pushes nearby enemies away when you take damage. Unequipping it angers it and reveals your location on the map.', variants:V_S4_STD},
 ];
