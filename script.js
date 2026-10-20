@@ -99,44 +99,65 @@ const SPRITES_S3 = [
    as Epic rolls them out (Normal + Gold are seeded as released
    by default below, since those were confirmed live day one).
    ========================================================= */
-const VARIANTS_S4 = ['normal', 'gold', 'cheatmaster','loothacker','bountyhunter'];
+const VARIANTS_S4 = ['normal', 'gold', 'cheatmaster','loothacker','bountyhunter','trickortreat','quack'];
 const VARIANT_LABEL_S4 = {
   normal: 'Normal',
   gold: 'Gold',
   cheatmaster: 'Cheat Master',
   loothacker: 'Loot Hacker',
   bountyhunter: 'Bounty Hunter',
+  trickortreat: 'Trick or Treat',
+  quack: 'Quack',
 };
+
+// Variant sets reused below so each sprite line stays short.
+const V_S4_STD   = ['normal','gold','cheatmaster','loothacker','bountyhunter','trickortreat'];
+const V_S4_QUACK = ['normal','gold','cheatmaster','loothacker','bountyhunter','trickortreat','quack'];
 
 // Drop rates not yet published for Override — left empty on purpose.
 // formatPct() already renders '—' for any sprite/variant with no entry here.
 const DROP_RATES_S4 = {};
 
-// Location/source data not yet published for Override.
-const SPRITE_LOCATION_S4 = {};
+// Location/source data — only the Fortnitemares sprites have a confirmed source so far.
+const SPRITE_LOCATION_S4 = {
+  spookydash:    'Pumpkin Chests, regular chests and Cheat Codes (Fortnitemares)',
+  vampire:       'Pumpkin Chests, regular chests and Cheat Codes (Fortnitemares)',
+  deer:          'Pumpkin Chests, regular chests and Cheat Codes (Fortnitemares)',
+  dumpsterdive:  'Pumpkin Chests, regular chests and Cheat Codes (Fortnitemares)',
+  honey:         'Fortnitemares — second drop (15 OCT 2026)',
+  onewishwillow: 'Fortnitemares — second drop (15 OCT 2026), Obsession crossover',
+};
 
 const SPRITES_S4 = [
-  {id:'jonesy',         name:'Jonesy',          rarity:'rare',      ability:'Recovers some health or shield a short while after taking damage.', variants:['normal','gold','cheatmaster','loothacker','bountyhunter']},
-  {id:'adventure',      name:'Adventure',       rarity:'epic',      ability:'Upgrades a random item in your inventory at each level.', variants:['normal','gold','cheatmaster','loothacker','bountyhunter']},
-  {id:'bush',           name:'Bush',            rarity:'rare',      ability:'Spawns a Bush disguise after a duration; at max level, grants one on elimination.', variants:['normal','gold','cheatmaster','loothacker','bountyhunter']},  
-  {id:'sonic',          name:'Sonic',           rarity:'legendary', ability:'Gotta go fast — noticeably increases sprint speed.', variants:['normal','gold','cheatmaster','loothacker','bountyhunter']},
-  {id:'tails',          name:'Tails',           rarity:'legendary', ability:'Lets you hover briefly in the air.', variants:['normal','gold','cheatmaster','loothacker','bountyhunter']},
-  {id:'shadow',         name:'Shadow',          rarity:'epic',      ability:'Automatically reloads weapons over time, even unequipped.', variants:['normal','gold','cheatmaster','loothacker','bountyhunter']},
-  {id:'8bit',           name:'8-Bit',           rarity:'epic',      ability:'Guarantees an 8-Bit Shotgun in your first chest, with a damage boost.', variants:['normal','gold','cheatmaster','loothacker','bountyhunter']},
-  {id:'jackrabbit',     name:'Jackrabbit',      rarity:'rare',      ability:'Grants an extra jump while mid-air.', variants:['normal','gold','cheatmaster','loothacker','bountyhunter']},
-  {id:'crown',          name:'Crown',           rarity:'mythic',    ability:'Grants bonus Crown Wins after a Victory Royale. Only levels up by winning matches.', variants:['normal','gold','cheatmaster','loothacker','bountyhunter']},
-  {id:'killswitch',     name:'Killswitch',      rarity:'epic',      ability:'Improves accuracy while in Hangtime.', variants:['normal','gold','cheatmaster','loothacker','bountyhunter']},
-  {id:'klombo',         name:'Klombo',          rarity:'epic',      ability:'Grants a random item at each level.', variants:['normal','gold','cheatmaster','loothacker','bountyhunter']},
+  {id:'jonesy',         name:'Jonesy',          rarity:'rare',      ability:'Recovers some health or shield a short while after taking damage.', variants:V_S4_QUACK},
+  {id:'adventure',      name:'Adventure',       rarity:'epic',      ability:'Upgrades a random item in your inventory at each level.', variants:V_S4_QUACK},
+  {id:'bush',           name:'Bush',            rarity:'rare',      ability:'Spawns a Bush disguise after a duration; at max level, grants one on elimination.', variants:V_S4_QUACK},
+  {id:'sonic',          name:'Sonic',           rarity:'legendary', ability:'Gotta go fast — noticeably increases sprint speed.', variants:V_S4_STD},
+  {id:'tails',          name:'Tails',           rarity:'legendary', ability:'Lets you hover briefly in the air.', variants:V_S4_STD},
+  {id:'shadow',         name:'Shadow',          rarity:'epic',      ability:'Automatically reloads weapons over time, even unequipped.', variants:V_S4_STD},
+  {id:'8bit',           name:'8-Bit',           rarity:'epic',      ability:'Guarantees an 8-Bit Shotgun in your first chest, with a damage boost.', variants:V_S4_STD},
+  {id:'jackrabbit',     name:'Jackrabbit',      rarity:'rare',      ability:'Grants an extra jump while mid-air.', variants:V_S4_STD},
+  {id:'crown',          name:'Crown',           rarity:'mythic',    ability:'Grants bonus Crown Wins after a Victory Royale. Only levels up by winning matches.', variants:V_S4_STD},
+  {id:'killswitch',     name:'Killswitch',      rarity:'epic',      ability:'Improves accuracy while in Hangtime.', variants:V_S4_STD},
+  {id:'klombo',         name:'Klombo',          rarity:'epic',      ability:'Grants a random item at each level.', variants:V_S4_QUACK},
   {id:'megaman',        name:'Mega Man',        rarity:'rare',      ability:'Slip and slide around with reduced friction while Sliding. Slide farther with each Level Up!', variants:['normal']},
-  {id:'overshield',     name:'Overshield',      rarity:'rare',      ability:'Grants overshield, scaling with level.', variants:['normal','gold','cheatmaster','loothacker','bountyhunter']},
-  {id:'xray',           name:'X-Ray',           rarity:'legendary', ability:'Periodically mark enemies in an area around you. Mark more often and in a larger radius with each Level Up!', variants:['normal','gold','cheatmaster','loothacker','bountyhunter']},
-  {id:'onigiri',        name:'Onigiri',         rarity:'rare',      ability:'Applies Overdrive after eating or drinking a Consumable. Overdrive lasts longer with each Level Up!', variants:['normal','gold','cheatmaster','loothacker','bountyhunter']},
-  {id:'stormscout',     name:'Storm Scout',     rarity:'rare',      ability:'Applies Overdrive after taking a certain amount of storm damage. Increases Overdrive duration with each Level Up!', variants:['normal','gold','cheatmaster','loothacker','bountyhunter']},
-  {id:'blinky',         name:'Blinky',          rarity:'legendary', ability:'Taking damage cloaks you for a short time, making you harder to spot.', variants:['normal','gold','cheatmaster','loothacker','bountyhunter']},
-  {id:'birthday',       name:'Birthday',        rarity:'rare',      ability:'Chests have a chance to serve up slices of cake when opened. At max Sprite Level, eliminations can too.', variants:['normal','gold','cheatmaster','loothacker','bountyhunter']},
-  {id:'crashbandicoot', name:'Crash Bandicoot', rarity:'legendary', ability:'Perform a spin attack while midair, damaging and knocking back nearby opponents.', variants:['normal','gold','cheatmaster','loothacker','bountyhunter']},
-  {id:'pond',           name:'Pond',            rarity:'epic',      ability:'Jump shortly after landing to trigger a Super Jump, if charges are present. Super jump strength increases and cooldown decreases with each Level Up!', variants:['normal','gold','cheatmaster','loothacker','bountyhunter']},
-  {id:'morgana',        name:'Morgana',         rarity:'epic',      ability:'Increases the effectiveness of healing items. Healing effectiveness increases with each Level Up!', variants:['normal','gold','cheatmaster','loothacker','bountyhunter']},
+  {id:'overshield',     name:'Overshield',      rarity:'rare',      ability:'Grants overshield, scaling with level.', variants:V_S4_STD},
+  {id:'xray',           name:'X-Ray',           rarity:'legendary', ability:'Periodically mark enemies in an area around you. Mark more often and in a larger radius with each Level Up!', variants:V_S4_STD},
+  {id:'onigiri',        name:'Onigiri',         rarity:'rare',      ability:'Applies Overdrive after eating or drinking a Consumable. Overdrive lasts longer with each Level Up!', variants:V_S4_STD},
+  {id:'stormscout',     name:'Storm Scout',     rarity:'rare',      ability:'Applies Overdrive after taking a certain amount of storm damage. Increases Overdrive duration with each Level Up!', variants:V_S4_STD},
+  {id:'blinky',         name:'Blinky',          rarity:'legendary', ability:'Taking damage cloaks you for a short time, making you harder to spot.', variants:V_S4_STD},
+  {id:'birthday',       name:'Birthday',        rarity:'rare',      ability:'Chests have a chance to serve up slices of cake when opened. At max Sprite Level, eliminations can too.', variants:V_S4_STD},
+  {id:'crashbandicoot', name:'Crash Bandicoot', rarity:'legendary', ability:'Perform a spin attack while midair, damaging and knocking back nearby opponents.', variants:V_S4_STD},
+  {id:'pond',           name:'Pond',            rarity:'epic',      ability:'Jump shortly after landing to trigger a Super Jump, if charges are present. Super jump strength increases and cooldown decreases with each Level Up!', variants:V_S4_STD},
+  {id:'morgana',        name:'Morgana',         rarity:'epic',      ability:'Increases the effectiveness of healing items. Healing effectiveness increases with each Level Up!', variants:V_S4_STD},
+  // ---- Fortnitemares (from 1 OCT 2026) ----
+  {id:'spookydash',     name:'Spooky Dash',     rarity:'mythic',    ability:'Jump in the air to phase through some objects. Charges regenerate over time and the cooldown drops with each Level Up!', variants:V_S4_QUACK},
+  {id:'vampire',        name:'Vampire',         rarity:'legendary', ability:'Recover health when you damage an enemy. Percentage recovered increases with each Level Up!', variants:V_S4_STD},
+  {id:'deer',           name:'The Deer',        rarity:'legendary', ability:'Melee attacks deal more damage. Bonus increases with each Level Up!', variants:V_S4_STD},
+  {id:'dumpsterdive',   name:'Dumpster Dive',   rarity:'epic',      ability:'Find food when jumping out of hiding props (small chance from containers) that heals extra. Food improves with each Level Up!', variants:V_S4_STD},
+  // ---- Fortnitemares second drop (15 OCT 2026) ----
+  {id:'honey',          name:'Honey',           rarity:'epic',      ability:'Sends bees after enemies who damage you.', variants:V_S4_STD},
+  {id:'onewishwillow',  name:'One Wish Willow', rarity:'mythic',    ability:'Instantly extracts an eliminated opponent\'s Sprites and pushes nearby enemies away when you take damage. Unequipping it angers it and reveals your location on the map.', variants:V_S4_STD},
 ];
 
 /* =========================================================
@@ -165,7 +186,7 @@ const SEASONS = {
     label: 'Chapter 7',
     subtitle: 'Override',
     tempTag: 'CH.7 · TEMP.4',
-    updated: '26 SET 2026',
+    updated: '20 OUT 2026',
     storageKey: 'spriteLockerCollectionV3_s4',
     releaseKey: 'spriteLockerReleaseV4_s4',
     assetPath: 'assets/override',
@@ -235,13 +256,33 @@ function seedSeasonDefaults(){
     s.sprites.forEach(sprite => {
       const vs = sprite.variants || s.variants;
       vs.forEach(v => {
-        if (v !== 'cheatmaster') releaseState[sprite.id + ':' + v] = true;
+        if (v !== 'cheatmaster' && v !== 'quack') releaseState[sprite.id + ':' + v] = true;
       });
     });
     saveReleaseState();
   }
 }
 seedSeasonDefaults();
+
+// One-time seed for the Fortnitemares update (OCT 2026): marks the new
+// sprites' Normal variant and every Trick or Treat variant as released,
+// without touching anything you've already toggled. Quack and the other
+// variants of the new sprites stay for you to flip in the Release Manager.
+const FNM_SEED_KEY = 'spriteLockerSeed_s4_fnm2026';
+function seedFortnitemares(){
+  const s = season();
+  if (s.id !== 's4') return;
+  try{ if (localStorage.getItem(FNM_SEED_KEY)) return; }catch(e){ return; }
+  const newIds = ['spookydash','vampire','deer','dumpsterdive','honey','onewishwillow'];
+  s.sprites.forEach(sprite => {
+    const vs = sprite.variants || s.variants;
+    if (newIds.includes(sprite.id)) releaseState[sprite.id + ':normal'] = true;
+    if (vs.includes('trickortreat')) releaseState[sprite.id + ':trickortreat'] = true;
+  });
+  saveReleaseState();
+  try{ localStorage.setItem(FNM_SEED_KEY, '1'); }catch(e){}
+}
+seedFortnitemares();
 
 function key(spriteId, variant){ return spriteId + ':' + variant; }
 function levelKey(spriteId, variant){ return spriteId + ':' + variant + ':_level'; }
@@ -711,6 +752,7 @@ function switchSeason(id){
   state = loadState();
   releaseState = loadReleaseState();
   seedSeasonDefaults();
+  seedFortnitemares();
 
   renderHeader();
   renderGrid();
