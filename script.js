@@ -503,6 +503,10 @@ function renderGrid(){
         if (!state[k]) {
           state[k] = true;
         }
+        // Reaching level 5 marks the variant as Mastered automatically.
+        if (e.target.value === '5') {
+          state[masterKey(sprite.id, v)] = true;
+        }
         saveState();
         renderGrid();
         renderProgress();
@@ -600,6 +604,10 @@ function renderGridIndividual(){
         const k = key(sprite.id, v);
         if (!state[k]) {
           state[k] = true;
+        }
+        // Reaching level 5 marks the variant as Mastered automatically.
+        if (e.target.value === '5') {
+          state[masterKey(sprite.id, v)] = true;
         }
         saveState();
         renderGrid();
