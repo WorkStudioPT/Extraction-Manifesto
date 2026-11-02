@@ -1208,11 +1208,18 @@ function calcularXP(){
   document.getElementById('xpDaysLeft').textContent = diasRestantes;
   document.getElementById('xpSeasonPct').textContent = pctEpoca + '%';
 
-  const bpPct = Math.min(100, Math.max(0, (nivelAtual / 100) * 100));
+  // Level caps follow Target Level: Target = bonus cap, Battle Pass = half of it
+  // (200 -> 100/200 in a full season, 140 -> 70/140 in a mini season).
+  const nivelMaxBonus = Math.max(1, nivelAlvo);
+  const nivelMaxBP = Math.max(1, Math.round(nivelAlvo / 2));
+  document.querySelectorAll('.sc_lvl_bp').forEach(el => el.textContent = nivelMaxBP);
+  document.querySelectorAll('.sc_lvl_bonus').forEach(el => el.textContent = nivelMaxBonus);
+
+  const bpPct = Math.min(100, Math.max(0, (nivelAtual / nivelMaxBP) * 100));
   document.getElementById('bpProgressBar').style.width = bpPct + '%';
   document.getElementById('bpPctText').textContent = Math.round(bpPct) + '%';
 
-  const bonusPct = Math.min(100, Math.max(0, (nivelAtual / 200) * 100));
+  const bonusPct = Math.min(100, Math.max(0, (nivelAtual / nivelMaxBonus) * 100));
   document.getElementById('bonusProgressBar').style.width = bonusPct + '%';
   document.getElementById('bonusPctText').textContent = Math.round(bonusPct) + '%';
 
@@ -1226,24 +1233,24 @@ function calcularXP(){
   document.getElementById('statXpDay').textContent = xpPorDia.toLocaleString('pt-PT');
   document.getElementById('xpDayNeededMeta').textContent = xpPorDia.toLocaleString('pt-PT');
 
-  const nivelEsperado100 = Math.min(100, Math.round((100 / totalDiasEpoca) * diasPassados));
-  const nivelEsperado200 = Math.min(200, Math.round((200 / totalDiasEpoca) * diasPassados));
+  const nivelEsperado100 = Math.min(nivelMaxBP, Math.round((nivelMaxBP / totalDiasEpoca) * diasPassados));
+  const nivelEsperado200 = Math.min(nivelMaxBonus, Math.round((nivelMaxBonus / totalDiasEpoca) * diasPassados));
   document.getElementById('statLevel100').textContent = nivelEsperado100;
   document.getElementById('statLevel200').textContent = nivelEsperado200;
 
-  gerarTabelaPaceXP(dataInicio, totalDiasEpoca, xpPorNivel);
+  gerarTabelaPaceXP(dataInicio, totalDiasEpoca, xpPorNivel, nivelMaxBP, nivelMaxBonus);
 }
 
-function gerarTabelaPaceXP(dataInicio, totalDias, xpPorNivel){
+function gerarTabelaPaceXP(dataInicio, totalDias, xpPorNivel, nivelMaxBP = 100, nivelMaxBonus = 200){
   const tbody = document.getElementById('paceTableBody');
   tbody.innerHTML = '';
   for(let i = 1; i <= totalDias; i++){
     const dataCorrente = new Date(dataInicio);
     dataCorrente.setDate(dataCorrente.getDate() + (i - 1));
 
-    const nivel100Meta = Math.min(100, Math.round((100 / totalDias) * i));
+    const nivel100Meta = Math.min(nivelMaxBP, Math.round((nivelMaxBP / totalDias) * i));
     const xp100Meta = Math.round(nivel100Meta * xpPorNivel);
-    const nivel200Meta = Math.min(200, Math.round((200 / totalDias) * i));
+    const nivel200Meta = Math.min(nivelMaxBonus, Math.round((nivelMaxBonus / totalDias) * i));
     const xp200Meta = Math.round(nivel200Meta * xpPorNivel);
 
     const tr = document.createElement('tr');

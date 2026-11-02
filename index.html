@@ -26,7 +26,7 @@
     </div>
     <div class="season-tab" data-view="ms" data-season="ms">
       <span class="season-tab-num">CH.7 · MINI</span>
-      <span class="season-tab-name">Fortnite Treasure Hunters</span>
+      <span class="season-tab-name">Treasure Hunters</span>
     </div>
   </div>
 
@@ -53,11 +53,11 @@
         <div class="stat-value" id="statSeasonPct">0%</div>
       </div>
       <div class="stat-card">
-        <div class="stat-title">Expected Level — 100</div>
+        <div class="stat-title">Expected Level — <span class="sc_lvl_bp">100</span></div>
         <div class="stat-value" id="statLevel100">0</div>
       </div>
       <div class="stat-card">
-        <div class="stat-title">Expected Level — 200</div>
+        <div class="stat-title">Expected Level — <span class="sc_lvl_bonus">200</span></div>
         <div class="stat-value stat-highlight" id="statLevel200">0</div>
       </div>
       <div class="stat-card">
@@ -75,7 +75,7 @@
       <div class="track-card">
         <div class="track-top">
           <div class="track-counters">
-            <div class="track-count">BATTLE PASS <span>LEVEL 0-100</span></div>
+            <div class="track-count">BATTLE PASS <span>LEVEL 0-<b class="sc_lvl_bp">100</b></span></div>
           </div>
           <div class="track-pct" id="bpPctText">0%</div>
         </div>
@@ -85,7 +85,7 @@
       <div class="track-card">
         <div class="track-top">
           <div class="track-counters">
-            <div class="track-count">BONUS REWARDS <span>LEVEL 0-200</span></div>
+            <div class="track-count">BONUS REWARDS <span>LEVEL 0-<b class="sc_lvl_bonus">200</b></span></div>
           </div>
           <div class="track-pct" id="bonusPctText">0%</div>
         </div>
@@ -101,10 +101,10 @@
               <tr>
                 <th>Date</th>
                 <th>Day #</th>
-                <th>Target (Lvl 100)</th>
-                <th>Accum. XP (100)</th>
-                <th>Target (Lvl 200)</th>
-                <th>Accum. XP (200)</th>
+                <th>Target (Lvl <span class="sc_lvl_bp">100</span>)</th>
+                <th>Accum. XP (<span class="sc_lvl_bp">100</span>)</th>
+                <th>Target (Lvl <span class="sc_lvl_bonus">200</span>)</th>
+                <th>Accum. XP (<span class="sc_lvl_bonus">200</span>)</th>
               </tr>
             </thead>
             <tbody id="paceTableBody"></tbody>
