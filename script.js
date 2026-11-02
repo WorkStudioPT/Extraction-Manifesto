@@ -242,7 +242,7 @@ const SEASONS = {
   ms: {
     id: 'ms',
     label: 'Chapter 7',
-    subtitle: 'Treasure Hunters',
+    subtitle: 'Fortnite Treasure Hunters',
     tempTag: 'CH.7 · MINI SEASON',
     updated: '02 NOV 2026',
     storageKey: 'spriteLockerCollectionV3_ms',
