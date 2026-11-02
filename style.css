@@ -77,6 +77,51 @@ body[data-season="override"] .chip{color:var(--ink);}
 body[data-season="override"] .chip.on{background:var(--ink-card-on);color:var(--ink);}
 body[data-season="override"] .chip-controls input[type="checkbox"]:checked::after{color:var(--card);}
 
+/* ===================================================
+   SEASON THEME: TREASURE HUNTERS (Chapter 7 Mini Season)
+   Night-at-sea reskin — deep navy water, aged-map ink
+   and doubloon gold, same layout & type.
+   =================================================== */
+body[data-season="treasure"]{
+  --paper:#0d1b26;
+  --paper-dark:#08131c;
+  --card:#132634;
+  --ink:#f1e4c3;
+  --ink-soft:#9fb2b8;
+  --ink-card-on:#2c5a5e;
+  --line:#25404f;
+  --tape:#e9b949;
+  --stamp:#d4553a;
+  --rare:#3fb6a8;
+  --epic:#9a7be0;
+  --legendary:#e9a23b;
+  --mythic:#e0475a;
+  --premium:#e9b949;
+  background:
+    repeating-linear-gradient(170deg, rgba(233,185,73,0.03) 0 1px, transparent 1px 9px),
+    radial-gradient(ellipse 900px 500px at 90% -10%, rgba(233,185,73,0.10), transparent),
+    radial-gradient(ellipse 700px 400px at 0% 110%, rgba(63,182,168,0.08), transparent),
+    var(--paper);
+}
+body[data-season="treasure"] .manifest-head,
+body[data-season="treasure"] .track-card,
+body[data-season="treasure"] .card,
+body[data-season="treasure"] .modal-card,
+body[data-season="treasure"] .release-panel,
+body[data-season="treasure"] .release-sprite-group{
+  box-shadow:5px 5px 0 rgba(233,185,73,.16);
+}
+body[data-season="treasure"] .tape-label{
+  background:var(--tape);
+  color:#1a1206;
+}
+body[data-season="treasure"] .icon:hover{
+  box-shadow:0 0 0 2px var(--tape);
+}
+body[data-season="treasure"] .chip{color:var(--ink);}
+body[data-season="treasure"] .chip.on{background:var(--ink-card-on);color:var(--ink);}
+body[data-season="treasure"] .chip-controls input[type="checkbox"]:checked::after{color:var(--card);}
+
 /* SEASON TABS */
 .season-tabs{
   display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;

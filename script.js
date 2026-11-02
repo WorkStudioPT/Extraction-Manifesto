@@ -142,21 +142,64 @@ const SPRITES_S4 = [
   {id:'klombo',         name:'Klombo',          rarity:'epic',      ability:'Grants a random item at each level.', variants:V_S4_QUACK},
   {id:'megaman',        name:'Mega Man',        rarity:'rare',      ability:'Slip and slide around with reduced friction while Sliding. Slide farther with each Level Up!', variants:['normal']},
   {id:'overshield',     name:'Overshield',      rarity:'rare',      ability:'Grants overshield, scaling with level.', variants:V_S4_STD},
-  {id:'pond',           name:'Pond',            rarity:'epic',      ability:'Jump shortly after landing to trigger a Super Jump, if charges are present. Super jump strength increases and cooldown decreases with each Level Up!', variants:V_S4_STD},
   {id:'xray',           name:'X-Ray',           rarity:'legendary', ability:'Periodically mark enemies in an area around you. Mark more often and in a larger radius with each Level Up!', variants:V_S4_STD},
   {id:'onigiri',        name:'Onigiri',         rarity:'rare',      ability:'Applies Overdrive after eating or drinking a Consumable. Overdrive lasts longer with each Level Up!', variants:V_S4_STD},
   {id:'stormscout',     name:'Storm Scout',     rarity:'rare',      ability:'Applies Overdrive after taking a certain amount of storm damage. Increases Overdrive duration with each Level Up!', variants:V_S4_STD},
   {id:'blinky',         name:'Blinky',          rarity:'legendary', ability:'Taking damage cloaks you for a short time, making you harder to spot.', variants:V_S4_STD},
-  {id:'dumpsterdive',   name:'Dumpster Dive',   rarity:'epic',      ability:'Find food when jumping out of hiding props (small chance from containers) that heals extra. Food improves with each Level Up!', variants:V_S4_STD},
   {id:'birthday',       name:'Birthday',        rarity:'rare',      ability:'Chests have a chance to serve up slices of cake when opened. At max Sprite Level, eliminations can too.', variants:V_S4_STD},
   {id:'crashbandicoot', name:'Crash Bandicoot', rarity:'legendary', ability:'Perform a spin attack while midair, damaging and knocking back nearby opponents.', variants:V_S4_STD},
+  {id:'pond',           name:'Pond',            rarity:'epic',      ability:'Jump shortly after landing to trigger a Super Jump, if charges are present. Super jump strength increases and cooldown decreases with each Level Up!', variants:V_S4_STD},
   {id:'morgana',        name:'Morgana',         rarity:'epic',      ability:'Increases the effectiveness of healing items. Healing effectiveness increases with each Level Up!', variants:V_S4_STD},
+  // ---- Fortnitemares (from 1 OCT 2026) ----
   {id:'spookydash',     name:'Spooky Dash',     rarity:'mythic',    ability:'Jump in the air to phase through some objects. Charges regenerate over time and the cooldown drops with each Level Up!', variants:V_S4_QUACK},
-  {id:'deer',           name:'The Deer',        rarity:'legendary', ability:'Melee attacks deal more damage. Bonus increases with each Level Up!', variants:V_S4_STD},
   {id:'vampire',        name:'Vampire',         rarity:'legendary', ability:'Recover health when you damage an enemy. Percentage recovered increases with each Level Up!', variants:V_S4_STD},
+  {id:'deer',           name:'The Deer',        rarity:'legendary', ability:'Melee attacks deal more damage. Bonus increases with each Level Up!', variants:V_S4_STD},
+  {id:'dumpsterdive',   name:'Dumpster Dive',   rarity:'epic',      ability:'Find food when jumping out of hiding props (small chance from containers) that heals extra. Food improves with each Level Up!', variants:V_S4_STD},
+  // ---- Fortnitemares second drop (15 OCT 2026) ----
   {id:'honey',          name:'Honey',           rarity:'epic',      ability:'Sends bees after enemies who damage you.', variants:V_S4_STD},
   {id:'onewishwillow',  name:'One Wish Willow', rarity:'mythic',    ability:'Instantly extracts an eliminated opponent\'s Sprites and pushes nearby enemies away when you take damage. Unequipping it angers it and reveals your location on the map.', variants:V_S4_STD},
 ];
+
+/* =========================================================
+   MINI SEASON — TREASURE HUNTERS
+   Launched 1 NOV 2026 (update v43.00, ~5 weeks). Data from
+   fortnite.gg. Variants: Normal, Fortune (Jeweled art) and
+   Cursed. At launch 12 sprites + 10 Fortune are live;
+   Lil' Uzi Vert Jr. and every Cursed variant are unreleased.
+   Sprites are found in buried Sprite Chests: tear down a
+   Wanted Poster, follow the Treasure Map, dig it up.
+   ========================================================= */
+const VARIANTS_MS = ['normal','fortune','cursed'];
+const VARIANT_LABEL_MS = {
+  normal: 'Normal',
+  fortune: 'Fortune',
+  cursed: 'Cursed',
+};
+const V_MS_STD = ['normal','fortune','cursed'];
+
+// fortnite.gg lists 0% Sprite Chest drop chance for all of them (they come
+// from Buried Chests via Treasure Maps), so no rates are shown.
+const DROP_RATES_MS = {};
+
+const MS_SOURCE = 'Buried Sprite Chests — tear down a Wanted Poster, follow the Treasure Map and dig it up';
+const SPRITE_LOCATION_MS = {};
+
+const SPRITES_MS = [
+  {id:'halfpeeld',        name:"Halfpeel'd",         rarity:'rare',      ability:'Marks eliminations on the map. Effect radius increases with each level up!', variants:V_MS_STD},
+  {id:'repete',           name:'Re-Pete',            rarity:'rare',      ability:'Increases reload speed, with a chance that reloading refunds ammo. Reload faster and higher chance of ammo refunds with each Level Up!', variants:V_MS_STD},
+  {id:'barryofish',       name:"Barry O'Fish",       rarity:'rare',      ability:'Reduces tactical sprint stamina drain when in water. Gain Slap at max level!', variants:V_MS_STD},
+  {id:'wayfinder',        name:'Wayfinder',          rarity:'rare',      ability:'Reveals Sprites nearby and grants more items when opening Buried Chests. Sprite detection radius increases with each Level Up!', variants:V_MS_STD},
+  {id:'chester',          name:'Chester',            rarity:'epic',      ability:'Grants a chance to spawn extra loot from Treasure Chests and nullifies fall damage. Increased chance of spawning an extra loot item with each Level Up!', variants:V_MS_STD},
+  {id:'exmarks',          name:'Exmarks',            rarity:'epic',      ability:'Reveals Treasure Maps and Wanted Posters. Spawns a Treasure Map at Max Level!', variants:V_MS_STD},
+  {id:'kelper',           name:'Kelper',             rarity:'epic',      ability:'Restores health over time when in water. Increased amount of health with each Level Up!', variants:V_MS_STD},
+  {id:'lilsquibbly',      name:"Lil' Squibbly",      rarity:'epic',      ability:'Jumping into a fishing hole fishes it and gives some bonus loot. Get more loot as you level up.', variants:V_MS_STD},
+  {id:'lilflacko',        name:"Lil' Flacko",        rarity:'legendary', ability:'Creates a small shockwave on landing, knocking back enemies. Increased knockback strength with each Level Up!', variants:V_MS_STD},
+  {id:'liluzivertjr',     name:"Lil' Uzi Vert Jr.",  rarity:'legendary', ability:'Generates a Chug Splash effect when restoring shields. Decreased cooldown with each Level Up!', variants:V_MS_STD},
+  {id:'transpondersnail', name:'Transponder Snail',  rarity:'legendary', ability:'Grants extra resources on pickup, with Teammates who also have this Sprite equipped receiving some extra resources as well! Increased amount of resources received at each Level Up!', variants:['normal']},
+  {id:'plundarrgh',       name:'Plundarrgh',         rarity:'mythic',    ability:'Opening Chest grants increased pickaxe speed and movement speed.', variants:V_MS_STD},
+  {id:'sweetdreams',      name:'Sweet Dreams',       rarity:'mythic',    ability:'Grants a random item at each level, exploding with Mythic loot at Max Level. Loot value increases at each Level Up!', variants:['normal']},
+];
+SPRITES_MS.forEach(sp => { SPRITE_LOCATION_MS[sp.id] = MS_SOURCE; });
 
 /* =========================================================
    SEASON REGISTRY
@@ -196,13 +239,30 @@ const SEASONS = {
     sprites: SPRITES_S4,
     theme: 'override',
   },
+  ms: {
+    id: 'ms',
+    label: 'Chapter 7',
+    subtitle: 'Treasure Hunters',
+    tempTag: 'CH.7 · MINI SEASON',
+    updated: '02 NOV 2026',
+    storageKey: 'spriteLockerCollectionV3_ms',
+    releaseKey: 'spriteLockerReleaseV4_ms',
+    assetPath: 'assets/treasurehunters',
+    ratesNote: 'Treasure Hunters sprites come from Buried Sprite Chests, not regular Sprite Chests, so no drop chances are listed. Cursed variants and Lil\' Uzi Vert Jr. were not live at launch — flip them on in the Release Manager when they drop.',
+    variants: VARIANTS_MS,
+    variantLabels: VARIANT_LABEL_MS,
+    dropRates: DROP_RATES_MS,
+    spriteLocation: SPRITE_LOCATION_MS,
+    sprites: SPRITES_MS,
+    theme: 'treasure',
+  },
 };
 
 const ACTIVE_SEASON_KEY = 'spriteLockerActiveSeason';
 const RARITY_LABEL = {rare:'Rare', epic:'Epic', legendary:'Legendary', mythic:'Mythic'};
 
-let currentSeasonId = localStorage.getItem(ACTIVE_SEASON_KEY) || 's4';
-if (!SEASONS[currentSeasonId]) currentSeasonId = 's4';
+let currentSeasonId = localStorage.getItem(ACTIVE_SEASON_KEY) || 'ms';
+if (!SEASONS[currentSeasonId]) currentSeasonId = 'ms';
 
 function season(){ return SEASONS[currentSeasonId]; }
 
@@ -213,7 +273,14 @@ let filter = {rarity:'all', search:'', missingOnly:false, showUnreleased:false, 
 function loadState(){
   try{
     const raw = localStorage.getItem(season().storageKey);
-    return raw ? JSON.parse(raw) : {};
+    const data = raw ? JSON.parse(raw) : {};
+    // Anything already saved at level 5 also gets the Mastered box ticked.
+    Object.keys(data).forEach(k => {
+      if (k.endsWith(':_level') && String(data[k]) === '5') {
+        data[k.replace(/:_level$/, ':_mastered')] = true;
+      }
+    });
+    return data;
   }catch(e){ return {}; }
 }
 function saveState(){
@@ -255,6 +322,17 @@ function seedSeasonDefaults(){
       const vs = sprite.variants || s.variants;
       vs.forEach(v => {
         if (v !== 'cheatmaster' && v !== 'quack') releaseState[sprite.id + ':' + v] = true;
+      });
+    });
+    saveReleaseState();
+  }
+  // Treasure Hunters launch state (1 NOV 2026): Normal + Fortune live for
+  // every sprite except Lil' Uzi Vert Jr.; no Cursed variant yet.
+  if (s.id === 'ms' && Object.keys(releaseState).length === 0) {
+    s.sprites.forEach(sprite => {
+      if (sprite.id === 'liluzivertjr') return;
+      (sprite.variants || s.variants).forEach(v => {
+        if (v !== 'cursed') releaseState[sprite.id + ':' + v] = true;
       });
     });
     saveReleaseState();
@@ -501,7 +579,7 @@ function renderGrid(){
         if (!state[k]) {
           state[k] = true;
         }
-        // Reaching level 5 marks the variant as Mastered automatically.
+        // Level 5 ticks the Mastered box automatically.
         if (e.target.value === '5') {
           state[masterKey(sprite.id, v)] = true;
         }
@@ -603,7 +681,7 @@ function renderGridIndividual(){
         if (!state[k]) {
           state[k] = true;
         }
-        // Reaching level 5 marks the variant as Mastered automatically.
+        // Level 5 ticks the Mastered box automatically.
         if (e.target.value === '5') {
           state[masterKey(sprite.id, v)] = true;
         }
@@ -1213,7 +1291,7 @@ renderGrid();
 renderProgress();
 
 if (currentView === 'sprites') {
-  switchView('sprites', SEASONS[currentSeasonId] ? currentSeasonId : 's4');
+  switchView('sprites', SEASONS[currentSeasonId] ? currentSeasonId : 'ms');
 } else {
   switchView('xp');
 }
