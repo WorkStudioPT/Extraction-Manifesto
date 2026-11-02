@@ -207,6 +207,8 @@ SPRITES_MS.forEach(sp => { SPRITE_LOCATION_MS[sp.id] = MS_SOURCE; });
 const SEASONS = {
   s3: {
     id: 's3',
+    xpStart: '2026-06-06',
+    xpEnd: '2026-08-19',
     label: 'Chapter 7',
     subtitle: 'Runners',
     tempTag: 'CH.7 · TEMP.3',
@@ -224,6 +226,8 @@ const SEASONS = {
   },
   s4: {
     id: 's4',
+    xpStart: '2026-08-20',
+    xpEnd: '2026-10-31',
     label: 'Chapter 7',
     subtitle: 'Override',
     tempTag: 'CH.7 · TEMP.4',
@@ -241,6 +245,8 @@ const SEASONS = {
   },
   ms: {
     id: 'ms',
+    xpStart: '2026-11-01',
+    xpEnd: '2026-12-06',
     label: 'Chapter 7',
     subtitle: 'Fortnite Treasure Hunters',
     tempTag: 'CH.7 · MINI SEASON',
@@ -257,6 +263,9 @@ const SEASONS = {
     theme: 'treasure',
   },
 };
+
+// Newest season = last entry in SEASONS (used for the XP Pace theme).
+const LATEST_SEASON_ID = Object.keys(SEASONS)[Object.keys(SEASONS).length - 1];
 
 const ACTIVE_SEASON_KEY = 'spriteLockerActiveSeason';
 const RARITY_LABEL = {rare:'Rare', epic:'Epic', legendary:'Legendary', mythic:'Mythic'};
@@ -867,8 +876,9 @@ function switchView(view, seasonId){
   });
 
   if (view === 'xp') {
-    // XP tracker always uses the Override (hacking) look, as requested.
-    document.body.setAttribute('data-season', 'override');
+    // XP tracker always wears the theme of the newest season in SEASONS,
+    // so adding a new season at the end of the registry reskins it too.
+    document.body.setAttribute('data-season', SEASONS[LATEST_SEASON_ID].theme);
   } else {
     switchSeason(seasonId);
   }
@@ -1264,8 +1274,21 @@ function carregarXP(){
   xpEl.xpDentroNivel.value = localStorage.getItem('xp_xpDentro') || '0';
   xpEl.nivelAlvo.value = localStorage.getItem('xp_nivelAlvo') || '200';
   xpEl.xpMedioNivel.value = localStorage.getItem('xp_xpMedio') || '80000';
-  xpEl.dataInicio.value = localStorage.getItem('xp_dataInicio') || '2026-08-20';
-  xpEl.dataFim.value = localStorage.getItem('xp_dataFim') || '2026-10-31';
+  // Dates default to the newest season. If the saved dates belong to an older
+  // season (saved start is before the newest season began), move to the new one.
+  const latest = SEASONS[LATEST_SEASON_ID];
+  let savedStart = localStorage.getItem('xp_dataInicio');
+  let savedEnd = localStorage.getItem('xp_dataFim');
+  if (!savedStart || savedStart < latest.xpStart) {
+    savedStart = latest.xpStart;
+    savedEnd = latest.xpEnd;
+    try{
+      localStorage.setItem('xp_dataInicio', savedStart);
+      localStorage.setItem('xp_dataFim', savedEnd);
+    }catch(e){}
+  }
+  xpEl.dataInicio.value = savedStart;
+  xpEl.dataFim.value = savedEnd || latest.xpEnd;
   calcularXP();
 }
 
