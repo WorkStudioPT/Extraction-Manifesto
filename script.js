@@ -169,13 +169,16 @@ const SPRITES_S4 = [
    Sprites are found in buried Sprite Chests: tear down a
    Wanted Poster, follow the Treasure Map, dig it up.
    ========================================================= */
-const VARIANTS_MS = ['normal','fortune','cursed'];
+const VARIANTS_MS = ['normal','fortune','cursed','gold'];
 const VARIANT_LABEL_MS = {
   normal: 'Normal',
   fortune: 'Fortune',
   cursed: 'Cursed',
+  gold: 'Gold',
 };
-const V_MS_STD = ['normal','fortune','cursed'];
+// Gold (LiquidGold art) is in the files for every sprite except
+// Transponder Snail, Sweet Dreams and Zee.
+const V_MS_STD = ['normal','fortune','cursed','gold'];
 
 // fortnite.gg lists 0% Sprite Chest drop chance for all of them (they come
 // from Buried Chests via Treasure Maps), so no rates are shown.
@@ -198,6 +201,11 @@ const SPRITES_MS = [
   {id:'transpondersnail', name:'Transponder Snail',  rarity:'legendary', ability:'Grants extra resources on pickup, with Teammates who also have this Sprite equipped receiving some extra resources as well! Increased amount of resources received at each Level Up!', variants:['normal']},
   {id:'plundarrgh',       name:'Plundarrgh',         rarity:'mythic',    ability:'Opening Chest grants increased pickaxe speed and movement speed.', variants:V_MS_STD},
   {id:'sweetdreams',      name:'Sweet Dreams',       rarity:'mythic',    ability:'Grants a random item at each level, exploding with Mythic loot at Max Level. Loot value increases at each Level Up!', variants:['normal']},
+  // ---- Added to the game files mid-season (fortnite.gg, 14 NOV 2026) — not live yet ----
+  {id:'squiplash',        name:'Squiplash',          rarity:'epic',      ability:'Deploys a Healing Smoke Bomb at low health. Decreased cooldown and increased duration and healing with each Level Up!', variants:V_MS_STD},
+  {id:'siroscar',         name:'Sir Oscar the Second', rarity:'legendary', ability:'Grants increased Pickaxe damage, also gives a temporary speed boost when your Shield breaks. Increased Pickaxe damage and speed boost with each Level Up!', variants:V_MS_STD},
+  {id:'minimiku',         name:'Mini Miku',          rarity:'mythic',    ability:'Grants a Friendship Bubble when emoting with other players. Decreased cooldown with each Level Up!', variants:V_MS_STD},
+  {id:'zee',              name:'Zee',                rarity:'mythic',    ability:'Grants regenerating Zero Point dash charges. Max charges increase and recharge time decrease with Level Up!', variants:['normal']},
 ];
 SPRITES_MS.forEach(sp => { SPRITE_LOCATION_MS[sp.id] = MS_SOURCE; });
 
@@ -250,11 +258,11 @@ const SEASONS = {
     label: 'Chapter 7',
     subtitle: 'Fortnite Treasure Hunters',
     tempTag: 'CH.7 · MINI SEASON',
-    updated: '02 NOV 2026',
+    updated: '14 NOV 2026',
     storageKey: 'spriteLockerCollectionV3_ms',
     releaseKey: 'spriteLockerReleaseV4_ms',
     assetPath: 'assets/treasurehunters',
-    ratesNote: 'Treasure Hunters sprites come from Buried Sprite Chests, not regular Sprite Chests, so no drop chances are listed. Cursed variants and Lil\' Uzi Vert Jr. were not live at launch — flip them on in the Release Manager when they drop.',
+    ratesNote: 'Treasure Hunters sprites come from Buried Sprite Chests, not regular Sprite Chests, so no drop chances are listed. Gold variants and the mid-season sprites (Squiplash, Sir Oscar the Second, Mini Miku, Zee) are in the game files but not live yet — flip them on in the Release Manager when they drop.',
     variants: VARIANTS_MS,
     variantLabels: VARIANT_LABEL_MS,
     dropRates: DROP_RATES_MS,
@@ -339,15 +347,31 @@ function seedSeasonDefaults(){
   // every sprite except Lil' Uzi Vert Jr.; no Cursed variant yet.
   if (s.id === 'ms' && Object.keys(releaseState).length === 0) {
     s.sprites.forEach(sprite => {
-      if (sprite.id === 'liluzivertjr') return;
+      if (['liluzivertjr','squiplash','siroscar','minimiku','zee'].includes(sprite.id)) return;
       (sprite.variants || s.variants).forEach(v => {
-        if (v !== 'cursed') releaseState[sprite.id + ':' + v] = true;
+        if (v !== 'cursed' && v !== 'gold') releaseState[sprite.id + ':' + v] = true;
       });
     });
     saveReleaseState();
   }
 }
 seedSeasonDefaults();
+
+// One-time seed (14 NOV 2026): Lil' Uzi Vert Jr. and every Cursed variant of
+// the launch sprites are live now. Gold and the new mid-season sprites are not.
+const MS_CURSED_SEED_KEY = 'spriteLockerSeed_ms_cursed';
+function seedTreasureCursed(){
+  const s = season();
+  if (s.id !== 'ms') return;
+  try{ if (localStorage.getItem(MS_CURSED_SEED_KEY)) return; }catch(e){ return; }
+  const launch = ['halfpeeld','repete','barryofish','wayfinder','chester','exmarks','kelper','lilsquibbly','lilflacko','liluzivertjr','plundarrgh'];
+  launch.forEach(id => { releaseState[id + ':cursed'] = true; });
+  releaseState['liluzivertjr:normal'] = true;
+  releaseState['liluzivertjr:fortune'] = true;
+  saveReleaseState();
+  try{ localStorage.setItem(MS_CURSED_SEED_KEY, '1'); }catch(e){}
+}
+seedTreasureCursed();
 
 // One-time seed for the Fortnitemares update (OCT 2026): marks the new
 // sprites' Normal variant and every Trick or Treat variant as released,
@@ -845,6 +869,7 @@ function switchSeason(id){
   state = loadState();
   releaseState = loadReleaseState();
   seedSeasonDefaults();
+  seedTreasureCursed();
   seedFortnitemares();
 
   renderHeader();
